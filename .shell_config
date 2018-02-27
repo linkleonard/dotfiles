@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# History
+# ================================================================
+
+# Append to history
+shopt -s histappend
+
+# Include timestamp in command history
+export HISTTIMEFORMAT="%Y-%m-%dT%H:%M:%S%z "
+
+# Update history on every command, and reload history.
+# This is needed for multiple simultaneous prompts.
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
+# Editors
+# ================================================================
+
+export EDITOR=emacs
+
+# Dynamic Prompt
+# ================================================================
+# Need to refer to $PROMPT_COMMAND so that we don't overwrite
+# existing commands that need to be run, i.e. pyenv-virtualenv's
+# auto-detection of local virtualenvs.
+
+# updatePrompt should be defined in ~/.shell_functions
+# export PROMPT_COMMAND="$PROMPT_COMMAND update_prompt;"
+
+# Misc
+# ================================================================
+# Remove scroll lock
+stty -ixon
+
+# LESS Configuration
+# ================================================================
+# ANSI Color sequences
+# Case-insensitive search
+export LESS=-Ri

@@ -1,0 +1,43 @@
+# example user config (see 'hg help config' for more info)
+[ui]
+# name and email, e.g.
+# username = Jane Doe <jdoe@example.com>
+username = Leonard Law <llaw@truveris.com>
+
+# We recommend enabling tweakdefaults to get slight improvements to
+# the UI over time. Make sure to set HGPLAIN in the environment when
+# writing scripts!
+# tweakdefaults = True
+
+# uncomment to disable color in command output
+# (see 'hg help color' for details)
+# color = never
+
+# uncomment to disable command output pagination
+# (see 'hg help pager' for details)
+# paginate = never
+
+merge = :merge3
+
+ignore = ~/.hgignore
+
+[extensions]
+# uncomment these lines to enable some popular extensions
+# (see 'hg help extensions' for more info)
+
+purge =
+strip =
+graphlog =
+
+
+[alias]
+log-branch = log -b .
+
+
+[hooks]
+pretxncommit.pdb = hg export tip | (! egrep -q '^\+.*pdb\.set_trace\(\).*$')
+pretxncommit.consolelog = hg export tip | (! egrep -q '^\+.*console\.log\(.*$')
+pretxncommit.conflictl = hg export tip | (! egrep -q '^\+.*<<<<<<.*$')
+#pretxncommit.conflictm = hg export tip | (! egrep -q '^\+.*======.*$')
+pretxncommit.conflictr = hg export tip | (! egrep -q '^\+.*>>>>>>.*$')
+# pretxncommit.trailingwhitespace=hg export tip | (! egrep -q ' +$')

@@ -1,0 +1,48 @@
+#!/bin/bash
+
+LOCAL_SHELL_FUNCTIONS=$DOTFILES_PATH/.shell_functions.local
+
+function update_prompt {
+  # See: https://www.digitalocean.com/community/tutorials/how-to-customize-your-bash-prompt-on-a-linux-vps
+  # Example:
+  # 2017-12-19 14:28:29 llaw@llaws-MacBook-Pro.local:~/truveris/projects/drilbur
+  # $ command-here
+  YELLOW='\[\e[0;33m\]'
+  YELLOW_BOLD='\[\e[1;33m\]'
+  GREEN='\[\e[32m\]'
+  BLUE='\[\e[36m\]'
+  WHITE='\[\e[0;37m\]'
+  RESET=$WHITE
+
+  PROMPT="$YELLOW\D{%Y-%m-%d %H:%M:%S} $GREEN\u@\H:$BLUE\w"
+
+  MERCURIAL_BRANCH=`hg branch 2>/dev/null`
+  if [[ $MERCURIAL_BRANCH != "" ]]; then
+    PROMPT="$PROMPT ${YELLOW}Hg{$MERCURIAL_BRANCH}$RESET"
+  fi
+
+  PYTHON_ENVIRONMENT=""
+  if [[ $VIRTUAL_ENV != "" ]]; then
+    PYTHON_ENVIRONMENT="${VIRTUAL_ENV##*/}"
+  elif [[ $PYENV_VERSION != "" ]]; then
+    PYTHON_ENVIRONMENT="$PYENV_VERSION"
+  fi
+
+  if [[ $PYTHON_ENVIRONMENT != "" ]]; then
+    PROMPT="$PROMPT ${YELLOW_BOLD}Py{$PYTHON_ENVIRONMENT}$RESET"
+  fi
+
+  NODE_ENVIRONMENT=`n list | grep ο | awk '{print $2}'`
+  if [[ $NODE_ENVIRONMENT != "" ]]; then
+    PROMPT="$PROMPT ${GREEN}N{$NODE_ENVIRONMENT}$RESET"
+  fi
+
+  # TODO: Add pyenv section
+  PS1="$PROMPT\n$RESET\$ "
+}
+
+export -f update_prompt
+
+if [[ -f $LOCAL_SHELL_FUNCTIONS ]]; then
+  source $LOCAL_SHELL_FUNCTIONS;
+fi;

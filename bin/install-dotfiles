@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+
+DOTFILES_DIR=$HOME/.dotfiles
+# Install dotfiles into home directory
+
+for name in `find . -name '.*' -type f`; do
+  filename="${name##*/}"
+  ln -sv $DOTFILES_DIR/$filename $HOME/$name;
+done;

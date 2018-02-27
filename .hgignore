@@ -1,0 +1,16 @@
+syntax: glob
+
+# OSX
+.DS_Store
+
+# pyenv
+.python-version
+
+# Python
+*.pyc
+
+# Coverage
+htmlcov/
+
+# ctags
+.tags*
