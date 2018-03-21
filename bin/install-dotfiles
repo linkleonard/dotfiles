@@ -4,7 +4,10 @@ set -e
 DOTFILES_DIR=$HOME/.dotfiles
 # Install dotfiles into home directory
 
-for name in `find . -name '.*' -type f`; do
-  filename="${name##*/}"
-  ln -sv $DOTFILES_DIR/$filename $HOME/$name;
-done;
+# for name in `find . -name '.*' -type f`; do
+#   filename="${name##*/}"
+#   ln -sv $DOTFILES_DIR/$filename $HOME/$name;
+# done;
+ln -sv $DOTFILES_DIR/shell/bash_profile $HOME/.bash_profile || true
+ln -sv $DOTFILES_DIR/hg/hgrc $HOME/.hgrc || true
+ln -sv $DOTFILES_DIR/hg/hgignore $HOME/.hgignore || true

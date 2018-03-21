@@ -1,4 +1,4 @@
-export DOTFILES_PATH="$HOME/.dotfiles"
+export SHELL_CONFIG_PATH="$HOME/.dotfiles/shell"
 
 # Homebrew
 export PATH="/Users/llaw/homebrew/bin:$PATH"
@@ -31,9 +31,9 @@ export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 # source ~/.bash-powerline.sh
 
 config_files=(
-  $DOTFILES_PATH/.bash_aliases
-  $DOTFILES_PATH/.shell_config
-  $DOTFILES_PATH/.shell_functions
+  $SHELL_CONFIG_PATH/aliases
+  $SHELL_CONFIG_PATH/config
+  $SHELL_CONFIG_PATH/functions
 )
 
 for config_file in "${config_files[@]}"; do
@@ -43,9 +43,9 @@ done;
 export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
 
 local_files=(
-  $DOTFILES_PATH/.bash_aliases.local
-  $DOTFILES_PATH/.bash_profile.local
-  $DOTFILES_PATH/.shell_functions.local
+  $SHELL_CONFIG_PATH/aliases.local
+  $SHELL_CONFIG_PATH/profile.local
+  $SHELL_CONFIG_PATH/functions.local
 )
 
 for local_file in "${local_files[@]}"; do
