@@ -75,9 +75,11 @@ function update_prompt {
   PS1="$PROMPT ${RESET}${TRANSITION}${DIVIDER}\n$RESET\$ "
 }
 
+function update_z {
+  # Adapted from z.sh
+  _z --add "$(command pwd -P 2>/dev/null)" 2>/dev/null
+}
+
 export -f update_history
 export -f update_prompt
-
-if [[ -f $LOCAL_SHELL_FUNCTIONS ]]; then
-  source $LOCAL_SHELL_FUNCTIONS;
-fi;
+export -f update_z

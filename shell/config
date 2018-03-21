@@ -13,6 +13,8 @@ export HISTTIMEFORMAT="%Y-%m-%dT%H:%M:%S%z "
 # This is needed for multiple simultaneous prompts.
 preexec_functions=(update_history)
 precmd_functions=(update_prompt)
+precmd_functions+=(update_z)
+
 
 # Editors
 # ================================================================

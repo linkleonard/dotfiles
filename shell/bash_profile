@@ -8,6 +8,7 @@ export PATH="/Users/llaw/bin:$PATH"
 
 # z.sh
 # ================================================================
+export _Z_NO_PROMPT_COMMAND=1
 
 . /Users/llaw/Documents/z/z.sh
 
