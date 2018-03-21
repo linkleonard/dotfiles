@@ -1,13 +1,39 @@
 #!/bin/bash
 set -e
 
+mkdir --parents $HOME/bin
+
+if [[ ! -a $HOME/.z ]]; then
+    git clone https://github.com/rupa/z.git $HOME/.z
+fi;
+
+if [[ ! -a $HOME/bin/z ]]; then
+    ln -s $HOME/.z/z.sh $HOME/bin/z;
+fi;
+
+
+lsb_release -a 2>/dev/null | grep -i ubuntu > /dev/null
+is_ubuntu=$?
+
+if [[ $is_ubuntu == "0" ]]; then
+    sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
+	 libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+	 xz-utils tk-dev;
+fi;
+
+if [[ ! -a $HOME/.pyenv ]]; then
+    curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash;
+fi;
+
+
+if [[ ! -a $HOME/n ]]; then
+    curl -L https://git.io/n-install | bash;
+fi;
+
+
 DOTFILES_DIR=$HOME/.dotfiles
 # Install dotfiles into home directory
 
-# for name in `find . -name '.*' -type f`; do
-#   filename="${name##*/}"
-#   ln -sv $DOTFILES_DIR/$filename $HOME/$name;
-# done;
 ln -sv $DOTFILES_DIR/shell/bash_profile $HOME/.bash_profile || true
 ln -sv $DOTFILES_DIR/hg/hgrc $HOME/.hgrc || true
 ln -sv $DOTFILES_DIR/hg/hgignore $HOME/.hgignore || true
