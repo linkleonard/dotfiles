@@ -3,8 +3,6 @@ export DOTFILES_PATH="$HOME/.dotfiles"
 # Homebrew
 export PATH="/Users/llaw/homebrew/bin:$PATH"
 
-. $DOTFILES_PATH/.bash_profile.local
-
 # Custom executables
 export PATH="/Users/llaw/bin:$PATH"
 
@@ -32,12 +30,28 @@ export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 # TODO: Figure out how to setup powerline
 # source ~/.bash-powerline.sh
 
-. $DOTFILES_PATH/.bash_aliases
-. $DOTFILES_PATH/.shell_config
-. $DOTFILES_PATH/.shell_functions
+config_files=(
+  $DOTFILES_PATH/.bash_aliases
+  $DOTFILES_PATH/.shell_config
+  $DOTFILES_PATH/.shell_functions
+)
 
-export PROMPT_COMMAND="$PROMPT_COMMAND update_prompt;"
+for config_file in "${config_files[@]}"; do
+  source $config_file;
+done;
 
 export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
+
+local_files=(
+  $DOTFILES_PATH/.bash_aliases.local
+  $DOTFILES_PATH/.bash_profile.local
+  $DOTFILES_PATH/.shell_functions.local
+)
+
+for local_file in "${local_files[@]}"; do
+  if [[ -f $local_file ]]; then
+    source $local_file;
+  fi;
+done;
 
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"

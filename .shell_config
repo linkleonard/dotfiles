@@ -11,7 +11,8 @@ export HISTTIMEFORMAT="%Y-%m-%dT%H:%M:%S%z "
 
 # Update history on every command, and reload history.
 # This is needed for multiple simultaneous prompts.
-export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+preexec_functions=(update_history)
+precmd_functions=(update_prompt)
 
 # Editors
 # ================================================================
