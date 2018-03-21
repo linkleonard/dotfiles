@@ -14,9 +14,9 @@ BLACK_BG=40
 CHECK_NODE=0
 
 function update_history() {
-    history -a;
-    history -c;
-    history -r;
+  if [[ "$(id -u)" != 0 ]]; then
+    echo "$(date "+%Y-%m-%d.%H:%M:%S") $(pwd) $(history 1)" >> $SHELL_HISTORY_PATH/bash-history-$(date "+%Y-%m-%d").log;
+  fi
 }
 
 WHITE_TEXT="\033[${BLACK_FG};${WHITE_BG}m"

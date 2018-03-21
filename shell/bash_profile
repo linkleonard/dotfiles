@@ -6,6 +6,9 @@ export PATH="/Users/llaw/homebrew/bin:$PATH"
 # Custom executables
 export PATH="/Users/llaw/bin:$PATH"
 
+# Log path
+export SHELL_HISTORY_PATH="/Users/llaw/.logs/"
+
 # z.sh
 # ================================================================
 export _Z_NO_PROMPT_COMMAND=1
@@ -56,3 +59,7 @@ for local_file in "${local_files[@]}"; do
 done;
 
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+
+if [[ ! -d $SHELL_HISTORY_PATH ]]; then
+  mkdir -p $SHELL_HISTORY_PATH;
+fi;
