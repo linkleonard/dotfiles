@@ -1,14 +1,16 @@
 #!/bin/bash
 set -e
 
+Z_DIR=$HOME/Documents/z
+
 mkdir --parents $HOME/bin
 
-if [[ ! -a $HOME/.z ]]; then
-    git clone https://github.com/rupa/z.git $HOME/.z
+if [[ ! -a $Z_DIR ]]; then
+    git clone https://github.com/rupa/z.git $Z_DIR
 fi;
 
 if [[ ! -a $HOME/bin/z ]]; then
-    ln -s $HOME/.z/z.sh $HOME/bin/z;
+    ln -s $Z_DIR/z.sh $HOME/bin/z;
 fi;
 
 
