@@ -1,0 +1,64 @@
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(package-initialize)
+
+
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (ini-mode json-mode launchctl mmm-jinja2 mmm-mako mmm-mode mode-icons nginx-mode on-screen linum-relative indent-guide devdocs dimmer yaml-mode xclip yasnippet-snippets yasnippet csv-mode metar minimap))))
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+
+(setq backup-directory-alist
+  `(("." . ,(concat user-emacs-directory "backups"))))
+
+;; Global Modes
+(yas-global-mode 1)
+
+;; Hotkeys
+(global-set-key (kbd "C-x /") 'comment-line)
+
+;; Post-save Hooks
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; Package Configs
+(setq org-log-done 'time)
+
+;; Enable mouse support wooooooo
+;; Stolen from https://iterm2.com/faq.html, "Q: How do I make the mouse work in emacs", but should expand more.
+(require 'mwheel)
+(require 'mouse)
+(xterm-mouse-mode t)
+(mouse-wheel-mode t)
+(global-set-key [mouse-4] 'previous-line)
+(global-set-key [mouse-5] 'next-line)
+
+;; Linum mode: for line numbers
+(add-hook 'find-file-hook (lambda () (linum-mode 1)))
+(setq linum-format "%d ")
+
+(require 'mmm-mako)
+(add-to-list 'auto-mode-alist '("\\.mako\\'" . html-mode))
+(mmm-add-mode-ext-class 'html-mode "\\.mako\\'" 'mako)

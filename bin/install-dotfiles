@@ -3,7 +3,7 @@ set -e
 
 Z_DIR=$HOME/Documents/z
 
-mkdir --parents $HOME/bin
+mkdir -p $HOME/bin
 
 if [[ ! -a $Z_DIR ]]; then
     git clone https://github.com/rupa/z.git $Z_DIR
@@ -39,3 +39,5 @@ DOTFILES_DIR=$HOME/.dotfiles
 ln -sv $DOTFILES_DIR/shell/bash_profile $HOME/.bash_profile || true
 ln -sv $DOTFILES_DIR/hg/hgrc $HOME/.hgrc || true
 ln -sv $DOTFILES_DIR/hg/hgignore $HOME/.hgignore || true
+ln -sv $DOTFILES_DIR/emacs/emacs  $HOME/.emacs || true
+ln -sv $DOTFILES_DIR/emacs/emacs.d  $HOME/.emacs.d || true
