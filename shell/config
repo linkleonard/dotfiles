@@ -21,6 +21,10 @@ precmd_functions+=(update_z)
 
 export EDITOR=emacs
 
+# Pager
+# ================================================================
+# export PAGER='less -SE'
+
 # Dynamic Prompt
 # ================================================================
 # Need to refer to $PROMPT_COMMAND so that we don't overwrite
