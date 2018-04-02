@@ -19,30 +19,42 @@ function update_history() {
   fi
 }
 
-WHITE_TEXT="\033[${BLACK_FG};${WHITE_BG}m"
+
 function update_prompt {
   # See: ec
   # Example:
   # 2017-12-19 14:28:29 llaw@llaws-MacBook-Pro.local:~/truveris/projects/drilbur
   # $ command-here
-  YELLOW_TEXT="\033[${BLACK_FG};${YELLOW_BG}m"
-  GREEN_TEXT="\033[${BLACK_FG};${GREEN_BG}m"
-  BLUE_TEXT="\033[${BLACK_FG};${BLUE_BG}m"
-  WHITE="\033[0;${WHITE_FG}m"
+  # YELLOW_TEXT="\e[${BLACK_FG};${YELLOW_BG}m"
+  # GREEN_TEXT="\e[${BLACK_FG};${GREEN_BG}m"
+  # BLUE_TXT="\e[${BLACK_FG};${BLUE_BG}m"
+  # WHITE="\e[0m"
+  # WHITE_TEXT="\e[${BLACK_FG};${WHITE_BG}m"
+  # YELLOW_TEXT=""
+  GREEN_TEXT=""
+  BLUE_TXT=""
+  WHITE_TEXT=""
+  WHITE=""
 
-  RESET=$WHITE
+  RESET="$WHITE"
 
   PYTHON_ICON="🐍 "
   NODE_ICON="⬢ "
   HG_ICON="⑂ "
   DIVIDER="▶"
 
+  # PYTHON_ICON=""
+  # NODE_ICON=""
+  # HG_ICON=""
+  # DIVIDER=''
+
   PROMPT="${YELLOW_TEXT}\D{%Y-%m-%d %H:%M:%S} ${GREEN_TEXT} \u@\H ${BLUE_TEXT} \w"
   TRANSITION_FG=$BLUE_FG
+  TRANSITION=""
 
   MERCURIAL_BRANCH=`hg branch 2>/dev/null`
   if [[ $MERCURIAL_BRANCH != "" ]]; then
-    TRANSITION="\033[${TRANSITION_FG};${WHITE_BG}m"
+    # TRANSITION="\e[${TRANSITION_FG};${WHITE_BG}m"
     PROMPT="$PROMPT ${TRANSITION}${DIVIDER}${WHITE_TEXT} ${HG_ICON}$MERCURIAL_BRANCH"
     TRANSITION_FG=$WHITE_FG
   fi
@@ -55,7 +67,7 @@ function update_prompt {
   fi
 
   if [[ $PYTHON_ENVIRONMENT != "" ]]; then
-    TRANSITION="\033[${TRANSITION_FG};${YELLOW_BG}m"
+    # TRANSITION="\e[${TRANSITION_FG};${YELLOW_BG}m"
     PROMPT="$PROMPT ${TRANSITION}${DIVIDER}${YELLOW_TEXT} ${PYTHON_ICON}$PYTHON_ENVIRONMENT"
     TRANSITION_FG=$YELLOW_FG
   fi
@@ -64,14 +76,14 @@ function update_prompt {
   if [[ $CHECK_NODE == 1 ]]; then
     NODE_ENVIRONMENT=`n list | grep ο | awk '{print $2}'`
     if [[ $NODE_ENVIRONMENT != "" ]]; then
-      TRANSITION="\033[${TRANSITION_FG};${GREEN_BG}m"
+      # TRANSITION="\e[${TRANSITION_FG};${GREEN_BG}m"
       PROMPT="$PROMPT ${TRANSITION}${DIVIDER}${GREEN_TEXT} ${NODE_ICON}$NODE_ENVIRONMENT"
       TRANSITION_FG=$GREEN_FG
     fi
   fi
 
   # TODO: Add pyenv section
-  TRANSITION="\033[${TRANSITION_FG}m"
+  # TRANSITION="\e[${TRANSITION_FG}m"
   PS1="$PROMPT ${RESET}${TRANSITION}${DIVIDER}\n$RESET\$ "
 }
 
