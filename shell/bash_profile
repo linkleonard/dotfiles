@@ -1,3 +1,4 @@
+# -*- mode: shell-script -*-
 export SHELL_CONFIG_PATH="$HOME/.dotfiles/shell"
 
 # Homebrew

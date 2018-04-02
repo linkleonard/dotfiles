@@ -1,4 +1,4 @@
-#!/bin/bash
+# -*- mode: shell-script -*-
 BLUE_FG=36
 BLUE_BG=46
 BLACK_FG=30
