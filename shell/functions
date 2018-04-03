@@ -27,7 +27,7 @@ function update_prompt {
   # $ command-here
   YELLOW_TEXT="\[\e[${BLACK_FG};${YELLOW_BG}m\]"
   GREEN_TEXT="\[\e[${BLACK_FG};${GREEN_BG}m\]"
-  BLUE_TXT="\[\e[${BLACK_FG};${BLUE_BG}m\]"
+  BLUE_TEXT="\[\e[${BLACK_FG};${BLUE_BG}m\]"
   WHITE_TEXT="\[\e[${BLACK_FG};${WHITE_BG}m\]"
   RESET='\[\e[0m\]'
 
