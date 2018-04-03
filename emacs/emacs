@@ -11,8 +11,6 @@
 (package-initialize)
 
 
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -21,7 +19,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (ini-mode json-mode launchctl mmm-jinja2 mmm-mako mmm-mode mode-icons nginx-mode on-screen linum-relative indent-guide devdocs dimmer yaml-mode xclip yasnippet-snippets yasnippet csv-mode metar minimap))))
+    (pyenv-mode pyenv-mode-auto counsel counsel-projectile ivy-dired-history ivy company company-jedi projectile ini-mode json-mode launchctl mmm-jinja2 mmm-mako mmm-mode mode-icons nginx-mode on-screen linum-relative indent-guide devdocs dimmer yaml-mode xclip yasnippet-snippets yasnippet csv-mode metar minimap))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -38,7 +36,7 @@
 (yas-global-mode 1)
 
 ;; Hotkeys
-(global-set-key (kbd "C-x /") 'comment-line)
+
 
 ;; Post-save Hooks
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -52,8 +50,6 @@
 (require 'mouse)
 (xterm-mouse-mode t)
 (mouse-wheel-mode t)
-(global-set-key [mouse-4] 'previous-line)
-(global-set-key [mouse-5] 'next-line)
 
 ;; Linum mode: for line numbers
 (add-hook 'find-file-hook (lambda () (linum-mode 1)))
@@ -62,3 +58,69 @@
 (require 'mmm-mako)
 (add-to-list 'auto-mode-alist '("\\.mako\\'" . html-mode))
 (mmm-add-mode-ext-class 'html-mode "\\.mako\\'" 'mako)
+
+(add-hook 'after-init-hook 'global-company-mode)
+
+(defun my/python-mode-hook ()
+  (add-to-list 'company-backends 'company-jedi))
+
+(add-hook 'python-mode-hook 'my/python-mode-hook)
+
+;; Ivy
+(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+(setq ivy-count-format "(%d/%d) ")
+
+(if window-system
+    (tool-bar-mode -1)
+  )
+
+
+;; Helper Functions
+
+(defun toggle-fullscreen (&optional f)
+  (interactive)
+  (let ((current-value (frame-parameter nil 'fullscreen)))
+    (set-frame-parameter nil 'fullscreen
+      (if (equal 'fullboth current-value)
+        (if (boundp 'old-fullscreen) old-fullscreen nil)
+        (progn (setq old-fullscreen current-value)
+          'fullboth)))))
+
+;; Keybinds
+
+;; Ivy
+(global-set-key (kbd "C-s") 'swiper)
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "<f1> f") 'counsel-describe-function)
+(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+(global-set-key (kbd "<f1> l") 'counsel-find-library)
+(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+
+(global-set-key (kbd "C-c g") 'counsel-git)
+(global-set-key (kbd "C-c j") 'counsel-git-grep)
+(global-set-key (kbd "C-c k") 'counsel-ag)
+(global-set-key (kbd "C-x l") 'counsel-locate)
+(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+
+(global-set-key (kbd "C-c C-r") 'ivy-resume)
+
+;; Custom
+(global-set-key [f11] 'toggle-fullscreen)
+
+(global-set-key [mouse-4] 'previous-line)
+(global-set-key [mouse-5] 'next-line)
+
+;; Programming
+(global-set-key (kbd "C-x /") 'comment-line)
+
+;; Disable Commands
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
+;; (setq jedi:server-command '("/Users/llaw/Documents/emacs-jedi/jediepcserver.py"))
+(pyenv-mode)
+
+(toggle-fullscreen t)
