@@ -2,19 +2,19 @@
 export SHELL_CONFIG_PATH="$HOME/.dotfiles/shell"
 
 # Homebrew
-export PATH="/Users/llaw/homebrew/bin:$PATH"
+export PATH="$HOME/homebrew/bin:$PATH"
 
 # Custom executables
-export PATH="/Users/llaw/bin:$PATH"
+export PATH="$HOME/bin:$PATH"
 
 # Log path
-export SHELL_HISTORY_PATH="/Users/llaw/.logs/"
+export SHELL_HISTORY_PATH="$HOME/.logs/"
 
 # z.sh
 # ================================================================
 export _Z_NO_PROMPT_COMMAND=1
 
-. /Users/llaw/Documents/z/z.sh
+. "$HOME/Documents/z/z.sh"
 
 # pyenv
 # ================================================================
