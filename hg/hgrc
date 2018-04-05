@@ -29,7 +29,7 @@ graphlog =
 
 
 [alias]
-log-branch = log -b .
+lg = log --graph
 
 
 [hooks]
