@@ -15,6 +15,7 @@ export SHELL_HISTORY_PATH="$HOME/.logs/"
 export _Z_NO_PROMPT_COMMAND=1
 
 . "$HOME/Documents/z/z.sh"
+source ~/.bash-preexec.sh
 
 # pyenv
 # ================================================================

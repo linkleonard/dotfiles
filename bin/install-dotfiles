@@ -2,6 +2,8 @@
 set -e
 
 Z_DIR=$HOME/Documents/z
+Z_SYMLINK=$HOME/bin/z
+BASH_PREEXEC_SCRIPT=$HOME/.bash-preexec.sh
 
 mkdir -p $HOME/bin
 
@@ -9,10 +11,13 @@ if [[ ! -a $Z_DIR ]]; then
     git clone https://github.com/rupa/z.git $Z_DIR
 fi;
 
-if [[ ! -a $HOME/bin/z ]]; then
-    ln -s $Z_DIR/z.sh $HOME/bin/z;
+if [[ ! -a $Z_SYMLINK ]]; then
+    ln -s $Z_DIR/z.sh $Z_SYMLINK;
 fi;
 
+if [[ ! -a $BASH_PREEXEC_SCRIPT ]]; then
+    curl https://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh -o $BASH_PREEXEC_SCRIPT;
+fi;
 
 which lsb_release && lsb_release -a 2>/dev/null | grep -i ubuntu > /dev/null
 is_ubuntu=$?
