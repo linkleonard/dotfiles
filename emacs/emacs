@@ -43,10 +43,14 @@
   :config
   (add-hook 'after-init-hook 'global-company-mode))
 
-;; (defun my/python-mode-hook ()
-;;   (add-to-list 'company-backends 'company-jedi))
+(use-package company-jedi
+  :ensure t
+  :config
+  (setq jedi:server-command '("/Users/llaw/Documents/emacs-jedi/jediepcserver.py"))
+  (defun my/python-mode-hook ()
+    (add-to-list 'company-backends 'company-jedi))
+  (add-hook 'python-mode-hook 'my/python-mode-hook))
 
-;; (add-hook 'python-mode-hook 'my/python-mode-hook)
 
 (use-package ivy
   :ensure t
@@ -128,8 +132,6 @@
 ;; Disable Commands
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
-
-;; ;; (setq jedi:server-command '("/Users/llaw/Documents/emacs-jedi/jediepcserver.py"))
 
 (toggle-fullscreen t)
 
