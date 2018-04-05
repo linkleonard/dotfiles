@@ -34,7 +34,7 @@ function update_prompt {
   PYTHON_ICON="🐍 "
   NODE_ICON="⬢ "
   HG_ICON="⑂ "
-  DIVIDER="▶"
+  DIVIDER=""
 
   PROMPT="${YELLOW_TEXT}\D{%Y-%m-%d %H:%M:%S} ${GREEN_TEXT} \u@\H ${BLUE_TEXT} \w"
   TRANSITION_FG=$BLUE_FG
