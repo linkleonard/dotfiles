@@ -14,7 +14,7 @@ if [[ ! -a $HOME/bin/z ]]; then
 fi;
 
 
-lsb_release -a 2>/dev/null | grep -i ubuntu > /dev/null
+which lsb_release && lsb_release -a 2>/dev/null | grep -i ubuntu > /dev/null
 is_ubuntu=$?
 
 if [[ $is_ubuntu == "0" ]]; then
