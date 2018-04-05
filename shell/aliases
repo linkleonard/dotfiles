@@ -2,4 +2,4 @@
 
 # Custom bash aliases
 alias ls='ls -G'
-alias launch-emacs='nohup emacs &'
+alias launch-emacs='nohup emacs > /dev/null &'
