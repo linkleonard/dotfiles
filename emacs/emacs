@@ -120,12 +120,31 @@
         (progn (setq old-fullscreen current-value)
           'fullboth)))))
 
+
+(defun region-pbcopy (beginning end)
+  "Runs the `pbcopy` shell command on the active region."
+  (interactive (if (use-region-p)
+                   (list (region-beginning) (region-end)
+                         )
+                 (list (point-min) (point-min)))
+               )
+  (let ((selection (buffer-substring-no-properties beginning end)))
+    (if (= (length selection) 0)
+        (message "Nothing selected")
+      (shell-command-on-region beginning end "pbcopy")
+      (format "Copied %d characters to clipboard." (length selection))
+      )
+    )
+  )
+
+
 ;; Custom Keybinds
 (global-set-key [f11] 'toggle-fullscreen)
 
 (global-set-key [mouse-4] 'previous-line)
 (global-set-key [mouse-5] 'next-line)
 
+(global-set-key (kbd "M-P") 'region-pbcopy)
 ;; Programming
 (global-set-key (kbd "C-x /") 'comment-line)
 
