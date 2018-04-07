@@ -132,7 +132,8 @@
     (if (= (length selection) 0)
         (message "Nothing selected")
       (shell-command-on-region beginning end "pbcopy")
-      (format "Copied %d characters to clipboard." (length selection))
+      (message
+       (format "Copied %d character(s) to clipboard" (length selection)))
       )
     )
   )
