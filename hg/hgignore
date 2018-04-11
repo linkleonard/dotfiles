@@ -16,4 +16,9 @@ htmlcov/
 .tags*
 
 # Emacs
+
+# auto-save files
 \#*\#
+
+# lock files
+.\#*
