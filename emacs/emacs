@@ -46,7 +46,6 @@
 (use-package company-jedi
   :ensure t
   :config
-  (setq jedi:server-command '("/Users/llaw/Documents/emacs-jedi/jediepcserver.py"))
   (defun my/python-mode-hook ()
     (add-to-list 'company-backends 'company-jedi))
   (add-hook 'python-mode-hook 'my/python-mode-hook))
@@ -86,6 +85,44 @@
 (use-package pyenv-mode-auto
   :ensure t)
 
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
+
+(use-package projectile
+  :ensure t
+  :config
+  (use-package counsel-projectile
+    :ensure t
+    :init (counsel-projectile-mode)
+    )
+  (setq projectile-enable-caching t)
+  ;; Fix projectile-discover-projects-in-directory.
+  ;; Patched version is in v0.16, which is not released yet. Unclear when this
+  ;; will be released. See https://github.com/bbatsov/projectile/issues/1165
+  (defun projectile-discover-projects-in-directory (directory)
+    "Discover any projects in DIRECTORY and add them to the projectile cache.
+This function is not recursive and only adds projects with roots
+at the top level of DIRECTORY."
+    (interactive
+     (list (read-directory-name "Starting directory: ")))
+    (let ((subdirs (directory-files directory t)))
+      (mapcar
+       (lambda (dir)
+         (when (and (file-directory-p dir)
+                    (not (member (file-name-nondirectory dir) '(".." "."))))
+           (let ((default-directory dir)
+                 (projectile-cached-project-root dir))
+             (when (projectile-project-p)
+               (projectile-add-known-project (projectile-project-root))))))
+       subdirs))))
+
+
+(use-package magit
+  :ensure t)
+
+(use-package monky
+  :ensure t)
 
 ;; Post-save Hooks
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -106,12 +143,10 @@
 (add-hook 'find-file-hook (lambda () (linum-mode 1)))
 (setq linum-format "%d ")
 
-(if window-system
-    (tool-bar-mode -1)
-  )
 ;; Helper Functions
 
-(defun toggle-fullscreen (&optional f)
+(defun toggle-fullscreen ()
+  "Toggle fullscreen mode."
   (interactive)
   (let ((current-value (frame-parameter nil 'fullscreen)))
     (set-frame-parameter nil 'fullscreen
@@ -122,7 +157,10 @@
 
 
 (defun region-pbcopy (beginning end)
-  "Runs the `pbcopy` shell command on the active region."
+  "Run the `pbcopy` shell command on a region.
+
+BEGINNING: The first character to copy.
+END: the last character to copy."
   (interactive (if (use-region-p)
                    (list (region-beginning) (region-end)
                          )
@@ -153,7 +191,7 @@
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
-(toggle-fullscreen t)
+(toggle-fullscreen)
 
 ;; (custom-set-variables
 ;;  ;; custom-set-variables was added by Custom.
@@ -169,17 +207,31 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (yas-snippets use-package))))
+ '(indent-tabs-mode nil)
+ '(package-selected-packages (quote (monky magit flycheck yas-snippets use-package)))
+ '(tab-always-indent (quote complete))
+ '(tab-stop-list nil))
+
+;; (setq custom-faces (list ()))
+
+;; (when window-system
+;;   (tool-bar-mode -1)
+;;   (add-to-list
+;;    custom-faces
+;;    '(whitespace-space ((t (:background "gray100" :foreground "lightgray"))))
+;;    )
+;;   )
+
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(whitespace-space ((t (:background "gray100" :foreground "lightgray"))))
-)
+ )
 
 (setq tab-width 4) ; or any other preferred value
 (defvaralias 'c-basic-offset 'tab-width)
 (defvaralias 'cperl-indent-level 'tab-width)
 (setq column-number-mode t)
+(put 'narrow-to-region 'disabled nil)
