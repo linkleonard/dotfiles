@@ -97,7 +97,16 @@
 
 (use-package flycheck
   :ensure t
-  :init (global-flycheck-mode))
+  :init
+  (global-flycheck-mode)
+  (use-package flycheck-pyflakes
+    :ensure t
+    :init
+    (add-hook 'python-mode-hook 'flycheck-mode)
+    ))
+
+(use-package pycoverage
+  :ensure t)
 
 (use-package projectile
   :ensure t
@@ -134,6 +143,9 @@ at the top level of DIRECTORY."
 (use-package monky
   :ensure t)
 
+(use-package linum-relative
+  :ensure t)
+
 ;; Post-save Hooks
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
@@ -159,7 +171,7 @@ at the top level of DIRECTORY."
 (global-whitespace-mode t)
 
 ;; Linum mode: for line numbers
-(add-hook 'find-file-hook (lambda () (linum-mode 1)))
+(add-hook 'find-file-hook (lambda () (linum-relative-on)))
 (setq linum-format "%d ")
 
 (when (fboundp 'windmove-default-keybindings)
@@ -224,7 +236,6 @@ END: the last character to copy."
 ;;  '(package-selected-packages
 ;;    (quote
 ;;     (pyenv-mode pyenv-mode-auto counsel counsel-projectile ivy-dired-history ivy company company-jedi projectile ini-mode json-mode launchctl mmm-jinja2 mmm-mako mmm-mode mode-icons nginx-mode on-screen linum-relative indent-guide devdocs dimmer yaml-mode xclip yasnippet-snippets yasnippet csv-mode metar minimap))))
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -235,18 +246,18 @@ END: the last character to copy."
  '(custom-safe-themes
    (quote
     ("e11569fd7e31321a33358ee4b232c2d3cf05caccd90f896e1df6cab228191109" default)))
- '(guide-key-mode t)
- '(indent-tabs-mode nil)
- '(package-selected-packages
-   (quote
-    (zenburn-theme guide-key free-keys monky magit flycheck yas-snippets use-package)))
  '(show-paren-delay 0)
  '(show-paren-highlight-openparen t)
  '(show-paren-mode t)
  '(show-paren-when-point-in-periphery t)
  '(show-paren-when-point-inside-paren t)
  '(tab-always-indent (quote complete))
- '(tab-stop-list nil))
+ '(tab-stop-list nil)
+
+ '(package-selected-packages
+   (quote
+    (zenburn-theme guide-key free-keys pycoverage linum-relative monky magit flycheck yas-snippets use-package))))
+
 
 ;; (setq custom-faces (list ()))
 

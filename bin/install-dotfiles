@@ -44,5 +44,6 @@ DOTFILES_DIR=$HOME/.dotfiles
 ln -sv $DOTFILES_DIR/shell/bash_profile $HOME/.bash_profile || true
 ln -sv $DOTFILES_DIR/hg/hgrc $HOME/.hgrc || true
 ln -sv $DOTFILES_DIR/hg/hgignore $HOME/.hgignore || true
+ln -sv $DOTFILES_DIR/git/gitignore_global $HOME/.gitignore_global || true
 ln -sv $DOTFILES_DIR/emacs/emacs  $HOME/.emacs || true
 ln -sv $DOTFILES_DIR/emacs/emacs.d  $HOME/.emacs.d || true
