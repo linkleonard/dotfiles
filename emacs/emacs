@@ -38,6 +38,9 @@
   (add-to-list 'auto-mode-alist '("\\.mako\\'" . html-mode))
   (mmm-add-mode-ext-class 'html-mode "\\.mako\\'" 'mako))
 
+(use-package zenburn-theme
+  :ensure t)
+
 (use-package company
   :ensure t
   :config
@@ -50,6 +53,13 @@
     (add-to-list 'company-backends 'company-jedi))
   (add-hook 'python-mode-hook 'my/python-mode-hook))
 
+(use-package guide-key
+  :ensure t
+  :defer t
+  :config
+  (progn
+    (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c" "M-g"))
+    (guide-key-mode 1)))
 
 (use-package ivy
   :ensure t
@@ -128,7 +138,16 @@ at the top level of DIRECTORY."
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; Package Configs
+(setq org-hide-leading-stars t)
 (setq org-log-done 'time)
+;; (org-babel-do-load-languages
+;;  '(org-babel-load-languages (quote ((python . t) (sh . t))))
+;;  )
+
+(defun my-org-confirm-babel-evaluate (lang body)
+  (not (string= lang "python")))
+(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+
 
 ;; Enable mouse support wooooooo
 ;; Stolen from https://iterm2.com/faq.html, "Q: How do I make the mouse work in emacs", but should expand more.
@@ -142,6 +161,9 @@ at the top level of DIRECTORY."
 ;; Linum mode: for line numbers
 (add-hook 'find-file-hook (lambda () (linum-mode 1)))
 (setq linum-format "%d ")
+
+(when (fboundp 'windmove-default-keybindings)
+  (windmove-default-keybindings))
 
 ;; Helper Functions
 
@@ -182,6 +204,7 @@ END: the last character to copy."
 
 (global-set-key [mouse-4] 'previous-line)
 (global-set-key [mouse-5] 'next-line)
+(global-set-key (kbd "C-x !") 'maximize-window)
 
 (global-set-key (kbd "M-P") 'region-pbcopy)
 ;; Programming
@@ -207,8 +230,21 @@ END: the last character to copy."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(custom-safe-themes
+   (quote
+    ("e11569fd7e31321a33358ee4b232c2d3cf05caccd90f896e1df6cab228191109" default)))
+ '(guide-key-mode t)
  '(indent-tabs-mode nil)
- '(package-selected-packages (quote (monky magit flycheck yas-snippets use-package)))
+ '(package-selected-packages
+   (quote
+    (zenburn-theme guide-key free-keys monky magit flycheck yas-snippets use-package)))
+ '(show-paren-delay 0)
+ '(show-paren-highlight-openparen t)
+ '(show-paren-mode t)
+ '(show-paren-when-point-in-periphery t)
+ '(show-paren-when-point-inside-paren t)
  '(tab-always-indent (quote complete))
  '(tab-stop-list nil))
 

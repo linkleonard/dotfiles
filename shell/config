@@ -44,3 +44,18 @@ stty -ixon
 # ANSI Color sequences
 # Case-insensitive search
 export LESS=-Ri
+
+
+# Autocomplete
+# ================================================================
+
+COMPLETIONS_DIR=$HOME/homebrew/etc/bash_completion.d
+if [[ -d $COMPLETIONS_DIR ]]; then
+    cd $COMPLETIONS_DIR;
+    for completions_file in $(find $COMPLETIONS_DIR -type l); do
+        # Some symlinks may not point to an actual file. Why...
+        if [[ -f $(readlink $completions_file) ]]; then
+            source $completions_file;
+        fi;
+    done;
+fi;
