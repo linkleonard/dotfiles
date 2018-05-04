@@ -19,7 +19,7 @@ precmd_functions+=(update_z)
 # Editors
 # ================================================================
 
-export EDITOR=emacs
+export EDITOR=emacsclient
 
 # Pager
 # ================================================================

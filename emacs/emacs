@@ -282,3 +282,5 @@ END: the last character to copy."
 (defvaralias 'cperl-indent-level 'tab-width)
 (setq column-number-mode t)
 (put 'narrow-to-region 'disabled nil)
+
+(server-start)

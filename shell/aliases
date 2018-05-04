@@ -2,5 +2,5 @@
 
 # Custom bash aliases
 alias ls='ls -G'
-alias launch-emacs='nohup emacs > /dev/null &'
 alias hg-pu='hg pull && hg update'
+alias edit='emacsclient'
