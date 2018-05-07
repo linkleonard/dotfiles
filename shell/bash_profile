@@ -38,8 +38,8 @@ export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
 config_files=(
   $SHELL_CONFIG_PATH/aliases
-  $SHELL_CONFIG_PATH/config
   $SHELL_CONFIG_PATH/functions
+  $SHELL_CONFIG_PATH/config
 )
 
 for config_file in "${config_files[@]}"; do
