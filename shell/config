@@ -12,7 +12,7 @@ export HISTTIMEFORMAT="%Y-%m-%dT%H:%M:%S%z "
 # Update history on every command, and reload history.
 # This is needed for multiple simultaneous prompts.
 preexec_functions=(update_history)
-precmd_functions=(update_prompt)
+precmd_functions+=(update_prompt)
 precmd_functions+=(update_z)
 
 
@@ -25,15 +25,6 @@ export EDITOR=emacsclient
 # ================================================================
 # export PAGER='less -SE'
 
-# Dynamic Prompt
-# ================================================================
-# Need to refer to $PROMPT_COMMAND so that we don't overwrite
-# existing commands that need to be run, i.e. pyenv-virtualenv's
-# auto-detection of local virtualenvs.
-
-# updatePrompt should be defined in ~/.shell_functions
-# export PROMPT_COMMAND="$PROMPT_COMMAND update_prompt;"
-
 # Misc
 # ================================================================
 # Remove scroll lock
@@ -44,19 +35,3 @@ stty -ixon
 # ANSI Color sequences
 # Case-insensitive search
 export LESS=-Ri
-
-
-# Autocomplete
-# ================================================================
-
-COMPLETIONS_DIR=$HOME/homebrew/etc/bash_completion.d
-if [[ -d $COMPLETIONS_DIR ]]; then
-    pushd $COMPLETIONS_DIR > /dev/null;
-    for completions_file in $(find $COMPLETIONS_DIR -type l); do
-        # Some symlinks may not point to an actual file. Why...
-        if [[ -f $(readlink $completions_file) ]]; then
-            source $completions_file;
-        fi;
-    done;
-    popd > /dev/null;
-fi;

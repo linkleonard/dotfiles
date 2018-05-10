@@ -12,10 +12,8 @@ export SHELL_HISTORY_PATH="$HOME/.logs/"
 
 # z.sh
 # ================================================================
-export _Z_NO_PROMPT_COMMAND=1
 
 . "$HOME/Documents/z/z.sh"
-source ~/.bash-preexec.sh
 
 # pyenv
 # ================================================================
@@ -31,10 +29,24 @@ if which pyenv-virtualenv-init > /dev/null; then
   eval "$(pyenv virtualenv-init -)";
 fi
 
-export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+# Autocomplete
+# ================================================================
 
-# TODO: Figure out how to setup powerline
-# source ~/.bash-powerline.sh
+# One of these scripts is modifying PROMPT_COMMAND... Need to read
+# before we import bash-preexec
+COMPLETIONS_DIR=$HOME/homebrew/etc/bash_completion.d
+if [[ -d $COMPLETIONS_DIR ]]; then
+    pushd $COMPLETIONS_DIR > /dev/null;
+    for completions_file in $(find $COMPLETIONS_DIR -type l); do
+        # Some symlinks may not point to an actual file. Why...
+        if [[ -f $(readlink $completions_file) ]]; then
+            source $completions_file;
+        fi;
+    done;
+    popd > /dev/null;
+fi;
+
+source ~/.bash-preexec.sh
 
 config_files=(
   $SHELL_CONFIG_PATH/aliases
@@ -45,6 +57,8 @@ config_files=(
 for config_file in "${config_files[@]}"; do
   source $config_file;
 done;
+
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
 export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
 
