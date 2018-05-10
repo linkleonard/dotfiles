@@ -102,10 +102,10 @@
   :ensure t
   :init
   (global-flycheck-mode)
-  (use-package flycheck-pyflakes
+  (use-package flycheck-pycheckers
     :ensure t
     :init
-    (add-hook 'python-mode-hook 'flycheck-mode)
+    (add-hook 'python-mode-hook #'flycheck-pycheckers-setup)
     ))
 
 (use-package pycoverage
@@ -249,9 +249,11 @@ END: the last character to copy."
  '(custom-safe-themes
    (quote
     ("e11569fd7e31321a33358ee4b232c2d3cf05caccd90f896e1df6cab228191109" default)))
+ '(flycheck-pycheckers-checkers (quote (flake8 pyflakes)))
+ '(org-babel-load-languages (quote ((emacs-lisp . t) (sh . t))))
  '(package-selected-packages
    (quote
-    (csharp-mode csharp zenburn-theme guide-key free-keys pycoverage linum-relative monky magit flycheck yas-snippets use-package)))
+    (flycheck-pycheckers csharp-mode csharp zenburn-theme guide-key free-keys pycoverage linum-relative monky magit flycheck yas-snippets use-package)))
  '(show-paren-delay 0)
  '(show-paren-highlight-openparen t)
  '(show-paren-mode t)
@@ -285,4 +287,5 @@ END: the last character to copy."
 (setq column-number-mode t)
 (put 'narrow-to-region 'disabled nil)
 
+(setq gc-cons-threshold 50000000)
 (server-start)
