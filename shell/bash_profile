@@ -4,6 +4,9 @@ export SHELL_CONFIG_PATH="$HOME/.dotfiles/shell"
 # Homebrew
 export PATH="$HOME/homebrew/bin:$PATH"
 
+# Rust, required for ag
+export PATH="$HOME/.cargo/bin:$PATH"
+
 # Custom executables
 export PATH="$HOME/bin:$PATH"
 
