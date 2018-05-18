@@ -4,6 +4,16 @@
 ;; You may delete these explanatory comments.
 (package-initialize)
 
+(add-hook 'dired-load-hook
+          (lambda ()
+            (load "dired-x")
+            ))
+(add-hook 'dired-mode-hook
+          (lambda()
+            (dired-omit-mode 1)
+            ))
+
+
 (require 'package)
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
@@ -30,6 +40,16 @@
 
 (use-package yasnippet-snippets
   :ensure t)
+
+(use-package ibuffer-projectile
+  :ensure t
+  :config
+  (add-hook 'ibuffer-hook
+    (lambda ()
+      (ibuffer-projectile-set-filter-groups)
+      (unless (eq ibuffer-sorting-mode 'alphabetic)
+        (ibuffer-do-sort-by-alphabetic))))
+  )
 
 (use-package mmm-jinja2
   :ensure t)
@@ -71,7 +91,9 @@
   (setq ivy-count-format "(%d/%d) ")
   :bind
   ("C-s" . swiper)
-  ("C-c C-r" . 'ivy-resume))
+  ("C-c C-r" . 'ivy-resume)
+  ("C-x b" . 'ivy-switch-buffer))
+
 
 (use-package counsel
   :ensure t
@@ -159,6 +181,10 @@ at the top level of DIRECTORY."
 ;;  '(org-babel-load-languages (quote ((python . t) (sh . t))))
 ;;  )
 
+(setq org-directory "~/Documents/org")
+(setq org-default-notes-file (concat org-directory "/notes.org"))
+(define-key global-map "\C-cc" 'org-capture)
+
 (defun my-org-confirm-babel-evaluate (lang body)
   (not (string= lang "python")))
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
@@ -221,6 +247,8 @@ END: the last character to copy."
 (global-set-key [mouse-5] 'next-line)
 (global-set-key (kbd "C-x !") 'maximize-window)
 
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
 (global-set-key (kbd "M-P") 'region-pbcopy)
 ;; Programming
 (global-set-key (kbd "C-x /") 'comment-line)
@@ -246,21 +274,35 @@ END: the last character to copy."
  ;; If there is more than one, they won't work right.
  '(ansi-color-faces-vector
    [default default default italic underline success warning error])
+ '(counsel-find-file-ignore-regexp
+   "\\(?:\\.\\(?:aux\\|b\\(?:bl\\|in\\|lg\\|zr/\\)\\|c\\(?:lass\\|ps?\\)\\|d\\(?:\\(?:64fs\\|fs\\|x\\(?:\\(?:32\\|64\\)fs\\)?\\)l\\)\\|elc\\|f\\(?:asl?\\|mt\\|ns?\\|\\(?:x\\(?:\\(?:32\\|64\\)f\\)\\)?sl\\)\\|g\\(?:it/\\|[lm]o\\)\\|hg/\\|idx\\|kys?\\|l\\(?:bin\\|ib\\|o[ft]\\|x\\(?:\\(?:32\\|64\\)fsl\\)\\|[ano]\\)\\|m\\(?:em\\|o\\)\\|p\\(?:64fsl\\|fsl\\|gs?\\|y[co]\\)\\|s\\(?:o\\|parcf\\|vn/\\|x\\(?:\\(?:32\\|64\\)fsl\\)\\)\\|t\\(?:fm\\|oc\\|ps?\\)\\|ufsl\\|vrs?\\|wx\\(?:\\(?:32\\|64\\)fsl\\)\\|x86f\\|[ao]\\)\\|CVS/\\|_\\(?:\\(?:MTN\\|darcs\\)/\\)\\|~\\)")
  '(custom-safe-themes
    (quote
     ("e11569fd7e31321a33358ee4b232c2d3cf05caccd90f896e1df6cab228191109" default)))
+ '(debug-ignored-errors
+   (quote
+    ("^Invalid face:? " "^Exit the snippet first!$" search-failed beginning-of-line beginning-of-buffer end-of-line end-of-buffer end-of-file buffer-read-only file-supersession mark-inactive user-error)))
  '(flycheck-pycheckers-checkers (quote (flake8 pyflakes)))
+ '(grep-find-ignored-directories
+   (quote
+    ("SCCS" "RCS" "CVS" "MCVS" ".src" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "htmlcov")))
  '(org-babel-load-languages (quote ((emacs-lisp . t) (sh . t))))
  '(package-selected-packages
    (quote
-    (flycheck-pycheckers csharp-mode csharp zenburn-theme guide-key free-keys pycoverage linum-relative monky magit flycheck yas-snippets use-package)))
+    (ibuffer-projectile flycheck-pycheckers csharp-mode csharp zenburn-theme guide-key free-keys pycoverage linum-relative monky magit flycheck yas-snippets use-package)))
+ '(projectile-globally-ignored-directories
+   (quote
+    (".idea" ".ensime_cache" ".eunit" ".git" ".hg" ".fslckout" "_FOSSIL_" ".bzr" "_darcs" ".tox" ".svn" ".stack-work" "htmlcov" "pytruveris.egg-info")))
  '(show-paren-delay 0)
  '(show-paren-highlight-openparen t)
  '(show-paren-mode t)
  '(show-paren-when-point-in-periphery t)
  '(show-paren-when-point-inside-paren t)
  '(tab-always-indent (quote complete))
- '(tab-stop-list nil))
+ '(tab-stop-list nil)
+ '(whitespace-style
+   (quote
+    (face trailing tabs spaces lines-tail newline empty indentation space-after-tab space-before-tab space-mark tab-mark newline-mark))))
 
 
 ;; (setq custom-faces (list ()))
