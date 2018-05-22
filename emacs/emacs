@@ -41,6 +41,11 @@
 (use-package yasnippet-snippets
   :ensure t)
 
+
+(use-package vue-mode
+  :ensure t)
+
+
 (use-package ibuffer-projectile
   :ensure t
   :config
