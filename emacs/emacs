@@ -71,10 +71,14 @@
 
 (use-package company-jedi
   :ensure t
+  :bind
+  ("C-x j d" . 'jedi:goto-definition)
+  ("C-x j p" . 'jedi:goto-definition-pop-marker)
   :config
   (defun my/python-mode-hook ()
     (add-to-list 'company-backends 'company-jedi))
   (add-hook 'python-mode-hook 'my/python-mode-hook))
+
 
 (use-package guide-key
   :ensure t
@@ -276,6 +280,18 @@ END: the last character to copy."
    [default default default italic underline success warning error])
  '(counsel-find-file-ignore-regexp
    "\\(?:\\.\\(?:aux\\|b\\(?:bl\\|in\\|lg\\|zr/\\)\\|c\\(?:lass\\|ps?\\)\\|d\\(?:\\(?:64fs\\|fs\\|x\\(?:\\(?:32\\|64\\)fs\\)?\\)l\\)\\|elc\\|f\\(?:asl?\\|mt\\|ns?\\|\\(?:x\\(?:\\(?:32\\|64\\)f\\)\\)?sl\\)\\|g\\(?:it/\\|[lm]o\\)\\|hg/\\|idx\\|kys?\\|l\\(?:bin\\|ib\\|o[ft]\\|x\\(?:\\(?:32\\|64\\)fsl\\)\\|[ano]\\)\\|m\\(?:em\\|o\\)\\|p\\(?:64fsl\\|fsl\\|gs?\\|y[co]\\)\\|s\\(?:o\\|parcf\\|vn/\\|x\\(?:\\(?:32\\|64\\)fsl\\)\\)\\|t\\(?:fm\\|oc\\|ps?\\)\\|ufsl\\|vrs?\\|wx\\(?:\\(?:32\\|64\\)fsl\\)\\|x86f\\|[ao]\\)\\|CVS/\\|_\\(?:\\(?:MTN\\|darcs\\)/\\)\\|~\\)")
+ '(counsel-projectile-mode t nil (counsel-projectile))
+ '(counsel-projectile-org-capture-templates
+   (quote
+    (("d" "Detail" entry
+      (file "tickets.org")
+      "*** %?
+   %a")
+     ("t" "Task" entry
+      (file+headline "notes.org" "Tasks")
+      "* TODO %?
+  %u
+  %a"))))
  '(custom-safe-themes
    (quote
     ("e11569fd7e31321a33358ee4b232c2d3cf05caccd90f896e1df6cab228191109" default)))
@@ -283,16 +299,38 @@ END: the last character to copy."
    (quote
     ("^Invalid face:? " "^Exit the snippet first!$" search-failed beginning-of-line beginning-of-buffer end-of-line end-of-buffer end-of-file buffer-read-only file-supersession mark-inactive user-error)))
  '(flycheck-pycheckers-checkers (quote (flake8 pyflakes)))
+ '(global-whitespace-mode t)
  '(grep-find-ignored-directories
    (quote
     ("SCCS" "RCS" "CVS" "MCVS" ".src" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "htmlcov")))
+ '(ido-enable-flex-matching t)
+ '(ido-everywhere t)
+ '(ido-ignore-directories (quote ("\\`CVS/" "\\`\\.\\./" "\\`\\./" ".*\\.egg-info/")))
+ '(indent-tabs-mode nil)
+ '(ivy-count-format "(%d/%d) ")
+ '(ivy-fixed-height-minibuffer t)
+ '(ivy-use-virtual-buffers t)
  '(org-babel-load-languages (quote ((emacs-lisp . t) (sh . t))))
+ '(org-capture-templates
+   (quote
+    (("d" "Ticket Detail" entry
+      (file "tickets.org")
+      "** Hello world")
+     ("i" "Tickets" entry
+      (file "tickets.org")
+      "* Ticket %^{prompt} (https://trac.truveris.com/ticket/%\\1/")
+     ("p" "Personal things to do" entry
+      (file "")
+      "* %i (%T)"))))
  '(package-selected-packages
    (quote
-    (ibuffer-projectile flycheck-pycheckers csharp-mode csharp zenburn-theme guide-key free-keys pycoverage linum-relative monky magit flycheck yas-snippets use-package)))
+    (vue-mode ibuffer-projectile flycheck-pycheckers csharp-mode csharp zenburn-theme guide-key free-keys pycoverage linum-relative monky magit flycheck yas-snippets use-package)))
+ '(projectile-enable-caching t)
+ '(projectile-find-dir-hook (quote (projectile-track-known-projects-find-file-hook)))
  '(projectile-globally-ignored-directories
    (quote
     (".idea" ".ensime_cache" ".eunit" ".git" ".hg" ".fslckout" "_FOSSIL_" ".bzr" "_darcs" ".tox" ".svn" ".stack-work" "htmlcov" "pytruveris.egg-info")))
+ '(projectile-mode t nil (projectile))
  '(show-paren-delay 0)
  '(show-paren-highlight-openparen t)
  '(show-paren-mode t)
@@ -302,7 +340,7 @@ END: the last character to copy."
  '(tab-stop-list nil)
  '(whitespace-style
    (quote
-    (face trailing tabs spaces lines-tail newline empty indentation space-after-tab space-before-tab space-mark tab-mark newline-mark))))
+    (face trailing tabs spaces lines-tail newline empty space-after-tab space-before-tab space-mark tab-mark newline-mark))))
 
 
 ;; (setq custom-faces (list ()))
@@ -321,7 +359,8 @@ END: the last character to copy."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(whitespace-line ((t (:background "#3F3F3F" :foreground "#DC8CC3"))))
+ '(whitespace-space ((t (:background "#3F3F3F" :foreground "#4F4F4F")))))
 
 (setq tab-width 4) ; or any other preferred value
 (defvaralias 'c-basic-offset 'tab-width)
