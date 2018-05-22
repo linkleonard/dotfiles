@@ -60,14 +60,11 @@ function update_prompt {
     TRANSITION_FG=$YELLOW_FG
   fi
 
-  NODE_ENVIRONMENT=""
-  if [[ $CHECK_NODE == 1 ]]; then
-    NODE_ENVIRONMENT=`n list | grep ο | awk '{print $2}'`
-    if [[ $NODE_ENVIRONMENT != "" ]]; then
-      TRANSITION="\[\e[${TRANSITION_FG};${GREEN_BG}m\]"
-      PROMPT="$PROMPT ${TRANSITION}${DIVIDER}${GREEN_TEXT} ${NODE_ICON}$NODE_ENVIRONMENT"
-      TRANSITION_FG=$GREEN_FG
-    fi
+  NODE_ENVIRONMENT=`n list | grep ο | awk '{print $2}'`
+  if [[ $NODE_ENVIRONMENT != "" ]]; then
+    TRANSITION="\[\e[${TRANSITION_FG};${GREEN_BG}m\]"
+    PROMPT="$PROMPT ${TRANSITION}${DIVIDER}${GREEN_TEXT} ${NODE_ICON}$NODE_ENVIRONMENT"
+    TRANSITION_FG=$GREEN_FG
   fi
 
   # TODO: Add pyenv section
