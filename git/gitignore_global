@@ -1,6 +1,9 @@
 *~
 .DS_Store
 
+# python files
+htmlcov
+
 # Emacs files
 \#*\#
 .\#*

@@ -494,9 +494,9 @@
 	<key>Default Bookmark Guid</key>
 	<string>FD1740D2-4F60-4D4A-82BC-32E1FA4E2A90</string>
 	<key>DimBackgroundWindows</key>
-	<false/>
+	<true/>
 	<key>DimOnlyText</key>
-	<false/>
+	<true/>
 	<key>DisableFullscreenTransparency</key>
 	<false/>
 	<key>EnableProxyIcon</key>
@@ -559,14 +559,16 @@
 	<string>696 396 939 284 0 0 1680 1050 </string>
 	<key>NSWindow Frame ProfilesPanel</key>
 	<string>176 528 735 382 0 0 1680 1050 </string>
+	<key>NSWindow Frame SUUpdateAlert</key>
+	<string>530 489 620 392 0 0 1680 1028 </string>
 	<key>NSWindow Frame SessionsPreferences</key>
 	<string>644 129 606 469 0 0 1680 1050 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>1797 1382 1016 512 1422 1050 1920 1058 </string>
+	<string>487 327 770 429 0 0 1680 1050 </string>
 	<key>NSWindow Frame UKCrashReporter</key>
 	<string>775 1524 592 584 620 1050 1920 1058 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>79 402 995 350 0 0 1680 1050 </string>
+	<string>676 484 995 350 0 0 1680 1050 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>565 292 1115 425 0 0 1680 1028 </string>
 	<key>New Bookmarks</key>
@@ -2196,7 +2198,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2018-04-17T17:14:30Z</date>
+	<date>2018-05-29T14:15:29Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>ShowBookmarkName</key>
@@ -2206,7 +2208,7 @@
 	<key>SmartPlacement</key>
 	<true/>
 	<key>SplitPaneDimmingAmount</key>
-	<real>0.15525841346153849</real>
+	<real>0.50514322916666687</real>
 	<key>StretchTabsToFillBar</key>
 	<true/>
 	<key>TabStyle</key>
@@ -2216,7 +2218,6 @@
 	<key>ToolbeltTools</key>
 	<array>
 		<string>Captured Output</string>
-		<string>Profiles</string>
 	</array>
 	<key>UKCrashReporterLastCrashReportDate</key>
 	<real>1516649984</real>
@@ -4080,7 +4081,7 @@
 	<key>findMode_iTerm</key>
 	<integer>0</integer>
 	<key>iTerm Version</key>
-	<string>3.1.5</string>
+	<string>3.1.6</string>
 	<key>kCPKSelectionViewPreferredModeKey</key>
 	<integer>0</integer>
 	<key>kCPKSelectionViewShowHSBTextFieldsKey</key>

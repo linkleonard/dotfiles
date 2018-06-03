@@ -69,6 +69,15 @@
 (use-package zenburn-theme
   :ensure t)
 
+
+(use-package emmet-mode
+  :ensure t
+  :config
+  (add-hook 'sgml-mode-hook 'emmet-mode)
+  (add-hook 'css-mode-hook  'emmet-mode)
+  (setq emmet-self-closing-tag-style " /"))
+
+
 (use-package company
   :ensure t
   :config
@@ -83,6 +92,13 @@
   (defun my/python-mode-hook ()
     (add-to-list 'company-backends 'company-jedi))
   (add-hook 'python-mode-hook 'my/python-mode-hook))
+
+
+(use-package js2-mode
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+  )
 
 
 (use-package guide-key
@@ -133,6 +149,11 @@
   :ensure t
   :init
   (global-flycheck-mode)
+  (add-hook 'flycheck-mode-hook
+            (lambda ()
+              (interactive)
+              (set-window-dedicated-p (selected-window) 1)))
+
   (use-package flycheck-pycheckers
     :ensure t
     :init
@@ -159,7 +180,7 @@ This function is not recursive and only adds projects with roots
 at the top level of DIRECTORY."
     (interactive
      (list (read-directory-name "Starting directory: ")))
-    (let ((subdirs (directory-files directory t)))
+    (let ((subdirs (directory-files directory t)))l
       (mapcar
        (lambda (dir)
          (when (and (file-directory-p dir)
@@ -207,6 +228,10 @@ at the top level of DIRECTORY."
 (mouse-wheel-mode t)
 
 (global-whitespace-mode t)
+
+
+(when (fboundp 'winner-mode)
+  (winner-mode 1))
 
 ;; Linum mode: for line numbers
 (add-hook 'find-file-hook (lambda () (linum-relative-on)))
@@ -305,9 +330,7 @@ END: the last character to copy."
     ("^Invalid face:? " "^Exit the snippet first!$" search-failed beginning-of-line beginning-of-buffer end-of-line end-of-buffer end-of-file buffer-read-only file-supersession mark-inactive user-error)))
  '(flycheck-pycheckers-checkers (quote (flake8 pyflakes)))
  '(global-whitespace-mode t)
- '(grep-find-ignored-directories
-   (quote
-    ("SCCS" "RCS" "CVS" "MCVS" ".src" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "htmlcov")))
+ '(grep-find-command (quote ("find . -type f -exec rg -nH -e  {} +" . 35)))
  '(ido-enable-flex-matching t)
  '(ido-everywhere t)
  '(ido-ignore-directories (quote ("\\`CVS/" "\\`\\.\\./" "\\`\\./" ".*\\.egg-info/")))
@@ -329,7 +352,7 @@ END: the last character to copy."
       "* %i (%T)"))))
  '(package-selected-packages
    (quote
-    (vue-mode ibuffer-projectile flycheck-pycheckers csharp-mode csharp zenburn-theme guide-key free-keys pycoverage linum-relative monky magit flycheck yas-snippets use-package)))
+    (emmet-mode js2-mode vue-mode ibuffer-projectile flycheck-pycheckers csharp-mode csharp zenburn-theme guide-key free-keys pycoverage linum-relative monky magit flycheck yas-snippets use-package)))
  '(projectile-enable-caching t)
  '(projectile-find-dir-hook (quote (projectile-track-known-projects-find-file-hook)))
  '(projectile-globally-ignored-directories
