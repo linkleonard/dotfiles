@@ -1,8 +1,54 @@
+;; time the loading of the .emacs
+;; keep this on top of your .emacs
+(defvar *emacs-load-start* (current-time))
+(defun anarcat/time-to-ms (time)
+  (+ (* (+ (* (car time) (expt 2 16)) (car (cdr time))) 1000000) (car (cdr (cdr time)))))
+(defun anarcat/display-timing ()
+  (message ".emacs loaded in %fms" (/ (- (anarcat/time-to-ms (current-time)) (anarcat/time-to-ms *emacs-load-start*)) 1000000.0)))
+(add-hook 'after-init-hook 'anarcat/display-timing t)
+
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
 (package-initialize)
+
+(setq inhibit-startup-echo-area-message "llaw")
+(setq gc-cons-threshold 50000000)
+
+(eval-when-compile
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+  (require 'use-package))
+
+(setq show-paren-mode t)
+(setq show-paren-delay 0)
+(setq show-paren-highlight-openparen t)
+(setq show-paren-mode t)
+(setq show-paren-when-point-in-periphery t)
+(setq show-paren-when-point-inside-paren t)
+
+(server-start)
+
+(setq backup-directory-alist
+  `(("." . ,(concat user-emacs-directory "backups"))))
+
+(add-to-list 'display-buffer-alist
+             `(,
+	       (rx bos "*Flycheck errors*" eos)
+	       (display-buffer-reuse-window display-buffer-in-side-window)
+	       (side            . bottom)
+	       (reusable-frames . visible)
+	       (window-height   . 0.20)
+	       ))
 
 (add-hook 'dired-load-hook
           (lambda ()
@@ -14,40 +60,28 @@
             ))
 
 
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(package-initialize)
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-(eval-when-compile
-  (require 'use-package))
-
-(setq backup-directory-alist
-  `(("." . ,(concat user-emacs-directory "backups"))))
-
 (use-package yasnippet
   :ensure t
   :config (yas-global-mode 1))
 
-(use-package csharp-mode
-  :ensure t)
+;; (use-package csharp-mode
+;;   :ensure t)
 
 (use-package yasnippet-snippets
+  :requires yasnippet
   :ensure t)
 
 
-(use-package vue-mode
-  :ensure t)
+;; (use-package vue-mode
+;;   :ensure t)
 
+(use-package ibuffer
+  :bind
+  ("C-x C-b" . 'ibuffer))
 
 (use-package ibuffer-projectile
   :ensure t
+  :after (ibuffer projectile)
   :config
   (add-hook 'ibuffer-hook
     (lambda ()
@@ -69,19 +103,58 @@
 (use-package zenburn-theme
   :ensure t)
 
-
-(use-package emmet-mode
-  :ensure t
-  :config
-  (add-hook 'sgml-mode-hook 'emmet-mode)
-  (add-hook 'css-mode-hook  'emmet-mode)
-  (setq emmet-self-closing-tag-style " /"))
+;; (use-package emmet-mode
+;;   :ensure t
+;;   :config
+;;   (add-hook 'sgml-mode-hook 'emmet-mode)
+;;   (add-hook 'css-mode-hook  'emmet-mode)
+;;   (setq emmet-self-closing-tag-style " /"))
 
 
 (use-package company
   :ensure t
   :config
-  (add-hook 'after-init-hook 'global-company-mode))
+  ;; (add-hook 'after-init-hook 'global-company-mode))
+  (add-hook 'python-mode-hook 'company-mode)
+  )
+
+;; (use-package lsp-mode
+;;   :ensure t
+;;   )
+
+;; (use-package lsp-ui
+;;   :ensure t
+;;   :after lsp-mode
+;;   :config
+;;   (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+;;   )
+
+;; (use-package company-lsp
+;;   :ensure t
+;;   :after (company lsp-mode)
+;;   :config
+;;   (message "Loaded company-lsp")
+;;   (push 'company-lsp company-backends))
+
+;; (use-package lsp-python
+;;   :ensure t
+;;   :after (python lsp-mode)
+;;   :config
+;;   (add-hook 'python-mode-hook #'lsp-python-enable)
+;;   (add-hook 'python-mode-hook #'flycheck-mode)
+;;   ;; NB: only required if you prefer flake8 instead of the default
+;;   ;; send pyls config via lsp-after-initialize-hook -- harmless for
+;;   ;; other servers due to pyls key, but would prefer only sending this
+;;   ;; when pyls gets initialised (:initialize function in
+;;   ;; lsp-define-stdio-client is invoked too early (before server
+;;   ;; start)) -- cpbotha
+;;   (defun lsp-set-cfg ()
+;;     (let ((lsp-cfg `(:pyls (:configurationSources ("flake8")))))
+;;       ;; TODO: check lsp--cur-workspace here to decide per server / project
+;;       (lsp--set-configuration lsp-cfg)))
+
+;;   (add-hook 'lsp-after-initialize-hook 'lsp-set-cfg))
+
 
 (use-package company-jedi
   :ensure t
@@ -91,23 +164,29 @@
   :config
   (defun my/python-mode-hook ()
     (add-to-list 'company-backends 'company-jedi))
-  (add-hook 'python-mode-hook 'my/python-mode-hook))
+  (add-hook 'python-mode-hook 'my/python-mode-hook)
+  (add-hook 'python-mode-hook #'flycheck-mode))
 
-
-(use-package js2-mode
+;; Also enables a column number display, so we don't need column-number-mode
+(use-package powerline
   :ensure t
   :config
-  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-  )
+  (powerline-default-theme))
+
+;; (use-package js2-mode
+;;   :ensure t
+;;   :config
+;;   (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+;;   )
 
 
-(use-package guide-key
-  :ensure t
-  :defer t
-  :config
-  (progn
-    (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c" "M-g" "C-c p"))
-    (guide-key-mode 1)))
+;; (use-package guide-key
+;;   :ensure t
+;;   :defer t
+;;   :config
+;;   (progn
+;;     (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c" "M-g" "C-c p"))
+;;     (guide-key-mode 1)))
 
 (use-package ivy
   :ensure t
@@ -118,7 +197,6 @@
   ("C-s" . swiper)
   ("C-c C-r" . 'ivy-resume)
   ("C-x b" . 'ivy-switch-buffer))
-
 
 (use-package counsel
   :ensure t
@@ -134,43 +212,55 @@
   ("C-c g" . 'counsel-git)
   ("C-c j" . 'counsel-git-grep)
   ("C-c k" . 'counsel-ag)
-  ("C-x l" . 'counsel-locate)
-  ("C-S-o" . 'counsel-rhythmbox))
+  ("C-x l" . 'counsel-locate))
+
+
+(use-package python
+  :ensure t
+  :mode ("\\.py\'" . python-mode)
+  :interpreter "python"
+  )
 
 (use-package pyenv-mode
   :ensure t
+  :after python
   :config
-  (pyenv-mode))
+  (pyenv-mode)
+  )
 
 (use-package pyenv-mode-auto
-  :ensure t)
+  :ensure t
+  :after pyenv-mode)
 
 (use-package flycheck
-  :ensure t
-  :init
-  (global-flycheck-mode)
-  (add-hook 'flycheck-mode-hook
-            (lambda ()
-              (interactive)
-              (set-window-dedicated-p (selected-window) 1)))
-
-  (use-package flycheck-pycheckers
-    :ensure t
-    :init
-    (add-hook 'python-mode-hook #'flycheck-pycheckers-setup)
-    ))
-
-(use-package pycoverage
   :ensure t)
+
+(use-package flycheck-pycheckers
+  :ensure t
+  :after (python flycheck
+  :init
+  (add-hook 'python-mode-hook #'flycheck-pycheckers-setup)
+  ))
+
+(use-package yaml-mode
+  :ensure t
+  :mode (
+	 ("\\.sls\\'" . yaml-mode)
+	 ("\\.yaml\\'" . yaml-mode)
+	 )
+  )
+
+;; (use-package pycoverage
+;;   :ensure t)
 
 (use-package projectile
   :ensure t
-  :config
-  (use-package counsel-projectile
-    :ensure t
-    :init (counsel-projectile-mode)
-    )
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
   (setq projectile-enable-caching t)
+  (setq projectile-switch-project-action #'projectile-dired)
+  :config
   ;; Fix projectile-discover-projects-in-directory.
   ;; Patched version is in v0.16, which is not released yet. Unclear when this
   ;; will be released. See https://github.com/bbatsov/projectile/issues/1165
@@ -180,7 +270,7 @@ This function is not recursive and only adds projects with roots
 at the top level of DIRECTORY."
     (interactive
      (list (read-directory-name "Starting directory: ")))
-    (let ((subdirs (directory-files directory t)))l
+    (let ((subdirs (directory-files directory t)))
       (mapcar
        (lambda (dir)
          (when (and (file-directory-p dir)
@@ -191,67 +281,95 @@ at the top level of DIRECTORY."
                (projectile-add-known-project (projectile-project-root))))))
        subdirs))))
 
+(use-package counsel-projectile
+  :ensure t
+  :after (counsel projectile)
+  :config
+  (counsel-projectile-mode)
+  (setq counsel-projectile-org-capture-templates
+	'(("d" "Detail" entry
+	   (file "~/Documents/org/tickets.org")
+	   "*** %?
+   %a
+")
+	  ("t" "Task" entry
+	   (file+headline "~/Documents/org/notes.org" "Tasks")
+	   "* TODO %?
+  %u
+  %a
+"))))
 
-(use-package magit
-  :ensure t)
 
-(use-package monky
-  :ensure t)
+;; (use-package magit
+;;   :ensure t)
 
-(use-package linum-relative
-  :ensure t)
+;; (use-package monky
+;;   :ensure t)
+
+;; (use-package linum-relative
+;;   :ensure t)
 
 ;; Post-save Hooks
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-;; Package Configs
-(setq org-hide-leading-stars t)
-(setq org-log-done 'time)
-;; (org-babel-do-load-languages
-;;  '(org-babel-load-languages (quote ((python . t) (sh . t))))
-;;  )
+(use-package org
+  :ensure t
+  :init
+  (setq org-hide-leading-stars t)
+  (setq org-log-done 'time)
+  (setq org-directory "~/Documents/org")
+  (setq org-default-notes-file (concat org-directory "/notes.org"))
+  ;; :bind-keymap
+  ;; ("C-c c" . 'org-capture)
+  :bind
+  ("C-c a" . 'org-agenda)
+  :config
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)
+     (sh . t)
+     (sql . t)))
+  (defun my-org-confirm-babel-evaluate (lang body)
+    (not (or (string= lang "python")
+	     (string= lang "sql"))))
+  (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+  ;; (setq org-capture-templates '(
+  ;; 				'("i" "Tickets" "entry"
+  ;; 				  '("file+headline" "tickets.org" "Unsorted")
+  ;; 				  "* Ticket %?")
+  ;; 				'("p" "Personal things to do" "entry"
+  ;; 				  '("file+headline" "" "Tasks")
+  ;; 				  "* %? (%T)"))))
+)
 
-(setq org-directory "~/Documents/org")
-(setq org-default-notes-file (concat org-directory "/notes.org"))
-(define-key global-map "\C-cc" 'org-capture)
+;; ;; Package Configs
 
-(defun my-org-confirm-babel-evaluate (lang body)
-  (not (string= lang "python")))
-(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+;; ;; Enable mouse support wooooooo
+;; ;; Stolen from https://iterm2.com/faq.html, "Q: How do I make the mouse work in emacs", but should expand more.
+;; (require 'mwheel)
+;; (require 'mouse)
+;; (xterm-mouse-mode t)
+;; (mouse-wheel-mode t)
 
-
-;; Enable mouse support wooooooo
-;; Stolen from https://iterm2.com/faq.html, "Q: How do I make the mouse work in emacs", but should expand more.
-(require 'mwheel)
-(require 'mouse)
-(xterm-mouse-mode t)
-(mouse-wheel-mode t)
-
-(global-whitespace-mode t)
+;; (global-whitespace-mode t)
 
 
-(when (fboundp 'winner-mode)
-  (winner-mode 1))
+;; (when (fboundp 'winner-mode)
+;;   (winner-mode 1))
 
 ;; Linum mode: for line numbers
-(add-hook 'find-file-hook (lambda () (linum-relative-on)))
+;; (add-hook 'find-file-hook (lambda () (linum-relative-on)))
 (setq linum-format "%d ")
+(use-package linum-relative
+  :ensure t
+  :config
+  (linum-relative-global-mode t)
+  )
 
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings))
 
-;; Helper Functions
-
-(defun toggle-fullscreen ()
-  "Toggle fullscreen mode."
-  (interactive)
-  (let ((current-value (frame-parameter nil 'fullscreen)))
-    (set-frame-parameter nil 'fullscreen
-      (if (equal 'fullboth current-value)
-        (if (boundp 'old-fullscreen) old-fullscreen nil)
-        (progn (setq old-fullscreen current-value)
-          'fullboth)))))
-
+;; ;; Helper Functions
 
 (defun region-pbcopy (beginning end)
   "Run the `pbcopy` shell command on a region.
@@ -275,111 +393,96 @@ END: the last character to copy."
 
 
 ;; Custom Keybinds
-(global-set-key [f11] 'toggle-fullscreen)
 
-(global-set-key [mouse-4] 'previous-line)
-(global-set-key [mouse-5] 'next-line)
-(global-set-key (kbd "C-x !") 'maximize-window)
-
-(global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "<F5>") 'sort-lines)
+;; (global-set-key [mouse-4] 'previous-line)
+;; (global-set-key [mouse-5] 'next-line)
+;; (global-set-key (kbd "C-x !") 'maximize-window)
 
 (global-set-key (kbd "M-P") 'region-pbcopy)
-;; Programming
-(global-set-key (kbd "C-x /") 'comment-line)
+;; ;; Programming
+;; (global-set-key (kbd "C-x /") 'comment-line)
 
-;; Disable Commands
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
+;; ;; Disable Commands
+;; (put 'upcase-region 'disabled nil)
+;; (put 'downcase-region 'disabled nil)
 
-(toggle-fullscreen)
+;; (toggle-frame-maximized)
 
+;; ;; (custom-set-variables
+;; ;;  ;; custom-set-variables was added by Custom.
+;; ;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;; ;;  ;; Your init file should contain only one such instance.
+;; ;;  ;; If there is more than one, they won't work right.
+;; ;;  '(package-selected-packages
+;; ;;    (quote
+;; ;;     (pyenv-mode pyenv-mode-auto counsel counsel-projectile ivy-dired-history ivy company company-jedi projectile ini-mode json-mode launchctl mmm-jinja2 mmm-mako mmm-mode mode-icons nginx-mode on-screen linum-relative indent-guide devdocs dimmer yaml-mode xclip yasnippet-snippets yasnippet csv-mode metar minimap))))
 ;; (custom-set-variables
 ;;  ;; custom-set-variables was added by Custom.
 ;;  ;; If you edit it by hand, you could mess it up, so be careful.
 ;;  ;; Your init file should contain only one such instance.
 ;;  ;; If there is more than one, they won't work right.
+;;  '(ansi-color-faces-vector
+;;    [default default default italic underline success warning error])
+;;  '(counsel-find-file-ignore-regexp
+;;    "\\(?:\\.\\(?:aux\\|b\\(?:bl\\|in\\|lg\\|zr/\\)\\|c\\(?:lass\\|ps?\\)\\|d\\(?:\\(?:64fs\\|fs\\|x\\(?:\\(?:32\\|64\\)fs\\)?\\)l\\)\\|elc\\|f\\(?:asl?\\|mt\\|ns?\\|\\(?:x\\(?:\\(?:32\\|64\\)f\\)\\)?sl\\)\\|g\\(?:it/\\|[lm]o\\)\\|hg/\\|idx\\|kys?\\|l\\(?:bin\\|ib\\|o[ft]\\|x\\(?:\\(?:32\\|64\\)fsl\\)\\|[ano]\\)\\|m\\(?:em\\|o\\)\\|p\\(?:64fsl\\|fsl\\|gs?\\|y[co]\\)\\|s\\(?:o\\|parcf\\|vn/\\|x\\(?:\\(?:32\\|64\\)fsl\\)\\)\\|t\\(?:fm\\|oc\\|ps?\\)\\|ufsl\\|vrs?\\|wx\\(?:\\(?:32\\|64\\)fsl\\)\\|x86f\\|[ao]\\)\\|CVS/\\|_\\(?:\\(?:MTN\\|darcs\\)/\\)\\|~\\)")
+;;  '(counsel-projectile-mode t nil (counsel-projectile))
+;;  '(counsel-projectile-org-capture-templates
+;;    (quote
+;;     (("d" "Detail" entry
+;;       (file "tickets.org")
+;;       "*** %?
+;;    %a")
+;;      ("t" "Task" entry
+;;       (file+headline "notes.org" "Tasks")
+;;       "* TODO %?
+;;   %u
+;;   %a"))))
+;;  '(custom-safe-themes
+;;    (quote
+;;     ("e11569fd7e31321a33358ee4b232c2d3cf05caccd90f896e1df6cab228191109" default)))
+;;  '(debug-ignored-errors
+;;    (quote
+;;     ("^Invalid face:? " "^Exit the snippet first!$" search-failed beginning-of-line beginning-of-buffer end-of-line end-of-buffer end-of-file buffer-read-only file-supersession mark-inactive user-error)))
+;;  '(flycheck-pycheckers-checkers (quote (flake8 pyflakes)))
+;;  '(global-whitespace-mode t)
+;;  '(grep-find-command (quote ("find . -type f -exec rg -nH -e  {} +" . 35)))
+;;  '(ido-enable-flex-matching t)
+;;  '(ido-everywhere t)
+;;  '(ido-ignore-directories (quote ("\\`CVS/" "\\`\\.\\./" "\\`\\./" ".*\\.egg-info/")))
+;;  '(indent-tabs-mode nil)
+;;  '(ivy-count-format "(%d/%d) ")
+;;  '(ivy-fixed-height-minibuffer t)
+;;  '(ivy-use-virtual-buffers t)
+;;  '(org-agenda-files
+;;    (quote
+;;     ("~/Documents/org/notes.org" "~/Documents/org/tickets.org")))
+;;  '(org-babel-load-languages (quote ((emacs-lisp . t) (sh . t))))
 ;;  '(package-selected-packages
 ;;    (quote
-;;     (pyenv-mode pyenv-mode-auto counsel counsel-projectile ivy-dired-history ivy company company-jedi projectile ini-mode json-mode launchctl mmm-jinja2 mmm-mako mmm-mode mode-icons nginx-mode on-screen linum-relative indent-guide devdocs dimmer yaml-mode xclip yasnippet-snippets yasnippet csv-mode metar minimap))))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(counsel-find-file-ignore-regexp
-   "\\(?:\\.\\(?:aux\\|b\\(?:bl\\|in\\|lg\\|zr/\\)\\|c\\(?:lass\\|ps?\\)\\|d\\(?:\\(?:64fs\\|fs\\|x\\(?:\\(?:32\\|64\\)fs\\)?\\)l\\)\\|elc\\|f\\(?:asl?\\|mt\\|ns?\\|\\(?:x\\(?:\\(?:32\\|64\\)f\\)\\)?sl\\)\\|g\\(?:it/\\|[lm]o\\)\\|hg/\\|idx\\|kys?\\|l\\(?:bin\\|ib\\|o[ft]\\|x\\(?:\\(?:32\\|64\\)fsl\\)\\|[ano]\\)\\|m\\(?:em\\|o\\)\\|p\\(?:64fsl\\|fsl\\|gs?\\|y[co]\\)\\|s\\(?:o\\|parcf\\|vn/\\|x\\(?:\\(?:32\\|64\\)fsl\\)\\)\\|t\\(?:fm\\|oc\\|ps?\\)\\|ufsl\\|vrs?\\|wx\\(?:\\(?:32\\|64\\)fsl\\)\\|x86f\\|[ao]\\)\\|CVS/\\|_\\(?:\\(?:MTN\\|darcs\\)/\\)\\|~\\)")
- '(counsel-projectile-mode t nil (counsel-projectile))
- '(counsel-projectile-org-capture-templates
-   (quote
-    (("d" "Detail" entry
-      (file "tickets.org")
-      "*** %?
-   %a")
-     ("t" "Task" entry
-      (file+headline "notes.org" "Tasks")
-      "* TODO %?
-  %u
-  %a"))))
- '(custom-safe-themes
-   (quote
-    ("e11569fd7e31321a33358ee4b232c2d3cf05caccd90f896e1df6cab228191109" default)))
- '(debug-ignored-errors
-   (quote
-    ("^Invalid face:? " "^Exit the snippet first!$" search-failed beginning-of-line beginning-of-buffer end-of-line end-of-buffer end-of-file buffer-read-only file-supersession mark-inactive user-error)))
- '(flycheck-pycheckers-checkers (quote (flake8 pyflakes)))
- '(global-whitespace-mode t)
- '(grep-find-command (quote ("find . -type f -exec rg -nH -e  {} +" . 35)))
- '(ido-enable-flex-matching t)
- '(ido-everywhere t)
- '(ido-ignore-directories (quote ("\\`CVS/" "\\`\\.\\./" "\\`\\./" ".*\\.egg-info/")))
- '(indent-tabs-mode nil)
- '(ivy-count-format "(%d/%d) ")
- '(ivy-fixed-height-minibuffer t)
- '(ivy-use-virtual-buffers t)
- '(org-babel-load-languages (quote ((emacs-lisp . t) (sh . t))))
- '(org-capture-templates
-   (quote
-    (("d" "Ticket Detail" entry
-      (file "tickets.org")
-      "** Hello world")
-     ("i" "Tickets" entry
-      (file "tickets.org")
-      "* Ticket %^{prompt} (https://trac.truveris.com/ticket/%\\1/")
-     ("p" "Personal things to do" entry
-      (file "")
-      "* %i (%T)"))))
- '(package-selected-packages
-   (quote
-    (emmet-mode js2-mode vue-mode ibuffer-projectile flycheck-pycheckers csharp-mode csharp zenburn-theme guide-key free-keys pycoverage linum-relative monky magit flycheck yas-snippets use-package)))
- '(projectile-enable-caching t)
- '(projectile-find-dir-hook (quote (projectile-track-known-projects-find-file-hook)))
- '(projectile-globally-ignored-directories
-   (quote
-    (".idea" ".ensime_cache" ".eunit" ".git" ".hg" ".fslckout" "_FOSSIL_" ".bzr" "_darcs" ".tox" ".svn" ".stack-work" "htmlcov" "pytruveris.egg-info")))
- '(projectile-mode t nil (projectile))
- '(show-paren-delay 0)
- '(show-paren-highlight-openparen t)
- '(show-paren-mode t)
- '(show-paren-when-point-in-periphery t)
- '(show-paren-when-point-inside-paren t)
- '(tab-always-indent (quote complete))
- '(tab-stop-list nil)
- '(whitespace-style
-   (quote
-    (face trailing tabs spaces lines-tail newline empty space-after-tab space-before-tab space-mark tab-mark newline-mark))))
+;;     (lsp-ui lsp-python company-lsp lsp-mode emmet-mode js2-mode vue-mode ibuffer-projectile flycheck-pycheckers csharp-mode csharp zenburn-theme guide-key free-keys pycoverage linum-relative monky magit flycheck yas-snippets use-package)))
+;;  '(projectile-enable-caching t)
+;;  '(projectile-find-dir-hook (quote (projectile-track-known-projects-find-file-hook)))
+;;  '(projectile-globally-ignored-directories
+;;    (quote
+;;     (".idea" ".ensime_cache" ".eunit" ".git" ".hg" ".fslckout" "_FOSSIL_" ".bzr" "_darcs" ".tox" ".svn" ".stack-work" "htmlcov" "pytruveris.egg-info")))
+;;  '(projectile-mode t nil (projectile))
+;;  '(tab-always-indent (quote complete))
+;;  '(tab-stop-list nil)
+;;  '(whitespace-style
+;;    (quote
+;;     (face trailing tabs spaces lines-tail newline empty space-after-tab space-before-tab space-mark tab-mark newline-mark))))
 
 
-;; (setq custom-faces (list ()))
+;; ;; (setq custom-faces (list ()))
 
-;; (when window-system
-;;   (tool-bar-mode -1)
-;;   (add-to-list
-;;    custom-faces
-;;    '(whitespace-space ((t (:background "gray100" :foreground "lightgray"))))
-;;    )
-;;   )
+;; ;; (when window-system
+;; ;;   (tool-bar-mode -1)
+;; ;;   (add-to-list
+;; ;;    custom-faces
+;; ;;    '(whitespace-space ((t (:background "gray100" :foreground "lightgray"))))
+;; ;;    )
+;; ;;   )
 
 
 (custom-set-faces
@@ -387,14 +490,39 @@ END: the last character to copy."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(whitespace-line ((t (:background "#3F3F3F" :foreground "#DC8CC3"))))
- '(whitespace-space ((t (:background "#3F3F3F" :foreground "#4F4F4F")))))
+ '(whitespace-line ((t (:background "#3F3F3F" :foreground "#DC8CC3")))))
 
-(setq tab-width 4) ; or any other preferred value
-(defvaralias 'c-basic-offset 'tab-width)
-(defvaralias 'cperl-indent-level 'tab-width)
-(setq column-number-mode t)
+;; (setq tab-width 4) ; or any other preferred value
+;; (defvaralias 'c-basic-offset 'tab-width)
+;; (defvaralias 'cperl-indent-level 'tab-width)
 (put 'narrow-to-region 'disabled nil)
 
-(setq gc-cons-threshold 50000000)
-(server-start)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-agenda-files
+   (quote
+    ("~/Documents/org/notes.org" "~/Documents/org/tickets.org")))
+ '(org-capture-templates
+   (quote
+    (("i" "Tickets" entry
+      (file+headline "tickets.org" "Unsorted")
+      "* Ticket %?")
+     ("p" "Personal things to do" entry
+      (file+headline "" "Tasks")
+      "* %? (%T)"))))
+ '(package-selected-packages
+   (quote
+    (smooth-scrolling show-paren-mode powerline mmm-mako mmm-jinja2 linum-relative yaml-mode flycheck-pycheckers yasnippet-snippets yasnippet zenburn-theme use-package pyenv-mode-auto lsp-ui lsp-python ibuffer-projectile counsel-projectile company-lsp)))
+ '(quote
+   (package-selected-packages
+    (quote
+     (projectile use-package)))))
+;; (custom-set-faces
+;;  ;; custom-set-faces was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  )
