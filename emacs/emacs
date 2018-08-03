@@ -13,6 +13,8 @@
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
+(package-initialize)
+
 (eval-when-compile
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
@@ -23,16 +25,23 @@
 (setq backup-directory-alist
   `(("." . ,(concat user-emacs-directory "backups"))))
 
-(package-initialize)
-
 (setq inhibit-startup-echo-area-message "llaw")
 (setq gc-cons-threshold 50000000)
 
+;; Shorten prompts to expecting y/n instead of the full 'yes' or 'no'.
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; Always use spaces when indenting!
+(setq-default indent-tabs-mode nil)
+
+
+(setq use-dialog-box nil)
 (setq show-paren-mode t)
 (setq show-paren-delay 0)
 (setq show-paren-highlight-openparen t)
 (setq show-paren-when-point-in-periphery t)
 (setq show-paren-when-point-inside-paren t)
+(setq truncate-lines t)
 
 (server-start)
 
@@ -66,9 +75,8 @@
   :requires yasnippet
   :ensure t)
 
-
-;; (use-package vue-mode
-;;   :ensure t)
+(use-package delight
+  :ensure t)
 
 (use-package ibuffer
   :bind
@@ -108,8 +116,10 @@
 
 (use-package company
   :ensure t
+  :delight
   :config
   ;; (add-hook 'after-init-hook 'global-company-mode))
+  (setq company-idle-delay 0.1)
   (add-hook 'python-mode-hook 'company-mode)
   )
 
@@ -136,7 +146,6 @@
 ;;   :after (python lsp-mode)
 ;;   :config
 ;;   (add-hook 'python-mode-hook #'lsp-python-enable)
-;;   (add-hook 'python-mode-hook #'flycheck-mode)
 ;;   ;; NB: only required if you prefer flake8 instead of the default
 ;;   ;; send pyls config via lsp-after-initialize-hook -- harmless for
 ;;   ;; other servers due to pyls key, but would prefer only sending this
@@ -166,13 +175,92 @@
 (use-package powerline
   :ensure t
   :config
+  ;; (defun powerline-default-theme ()
+  ;; "Setup the default mode-line."
+  ;; (interactive)
+  ;; (setq-default mode-line-format
+  ;;               '("%e"
+  ;;                 (:eval
+  ;;                  (let* ((active (powerline-selected-window-active))
+  ;;                         (mode-line-buffer-id (if active 'mode-line-buffer-id 'mode-line-buffer-id-inactive))
+  ;;                         (mode-line (if active 'mode-line 'mode-line-inactive))
+  ;;                         (face0 (if active 'powerline-active0 'powerline-inactive0))
+  ;;                         (face1 (if active 'powerline-active1 'powerline-inactive1))
+  ;;                         (face2 (if active 'powerline-active2 'powerline-inactive2))
+  ;;                         (separator-left (intern (format "powerline-%s-%s"
+  ;; 							  (powerline-current-separator)
+  ;;                                                         (car powerline-default-separator-dir))))
+  ;;                         (separator-right (intern (format "powerline-%s-%s"
+  ;;                                                          (powerline-current-separator)
+  ;;                                                          (cdr powerline-default-separator-dir))))
+  ;;                         (lhs (list (powerline-raw "%*" face0 'l)
+  ;;                                    (when powerline-display-buffer-size
+  ;;                                      (powerline-buffer-size face0 'l))
+  ;;                                    (when powerline-display-mule-info
+  ;;                                      (powerline-raw mode-line-mule-info face0 'l))
+  ;;                                    (powerline-buffer-id `(mode-line-buffer-id ,face0) 'l)
+  ;;                                    (when (and (boundp 'which-func-mode) which-func-mode)
+  ;;                                      (powerline-raw which-func-format face0 'l))
+  ;;                                    (powerline-raw " " face0)
+  ;;                                    (funcall separator-left face0 face1)
+  ;;                                    (when (and (boundp 'erc-track-minor-mode) erc-track-minor-mode)
+  ;;                                      (powerline-raw erc-modified-channels-object face1 'l))
+  ;;                                    (powerline-major-mode face1 'l)
+  ;;                                    (powerline-process face1)
+  ;;                                    (powerline-minor-modes face1 'l)
+  ;;                                    (powerline-narrow face1 'l)
+  ;;                                    (powerline-raw " " face1)
+  ;;                                    (funcall separator-left face1 face2)
+  ;;                                    (powerline-vc face2 'r)
+  ;;                                    (when (bound-and-true-p nyan-mode)
+  ;;                                      (powerline-raw (list (nyan-create)) face2 'l))))
+  ;;                         (rhs (list (powerline-raw global-mode-string face2 'r)
+  ;;                                    (funcall separator-right face2 face1)
+  ;; 				     (unless window-system
+  ;; 				       (powerline-raw (char-to-string #xe0a1) face1 'l))
+  ;; 				     (powerline-raw "%4l" face1 'l)
+  ;; 				     (powerline-raw ":" face1 'l)
+  ;; 				     (powerline-raw "%3c" face1 'r)
+  ;; 				     (funcall separator-right face1 face0)
+  ;; 				     (powerline-raw " " face0)
+  ;; 				     (powerline-raw "%6p" face0 'r)
+  ;;                                    (when powerline-display-hud
+  ;;                                      (powerline-hud face0 face2))
+  ;; 				     (powerline-fill face0 0)
+  ;; 				     )))
+  ;; 		     (concat (powerline-render lhs)
+  ;; 			     (powerline-fill face2 (powerline-width rhs))
+  ;; 			     (powerline-render rhs)))))))
+
   (powerline-default-theme))
 
-;; (use-package js2-mode
-;;   :ensure t
-;;   :config
-;;   (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-;;   )
+(defun initialize-js ()
+  "Initialize javascript variables."
+  (setq js-indent-level 2)
+  )
+
+
+(use-package magit
+  :ensure t
+  )
+
+(use-package vue-mode
+  :ensure t
+  :mode "\\.vue\\'"
+  :config
+  (initialize-js)
+  )
+
+(use-package scss-mode
+  :ensure t
+)
+
+(use-package rjsx-mode
+  :ensure t
+  :mode "\\.js\\'"
+  :config
+  (initialize-js)
+  )
 
 
 ;; (use-package guide-key
@@ -213,7 +301,8 @@
 (use-package python
   :ensure t
   :mode ("\\.py\'" . python-mode)
-  :interpreter "python"
+  :interpreter ("python" . python-mode)
+  :config
   )
 
 (use-package pyenv-mode
@@ -228,14 +317,20 @@
   :after pyenv-mode)
 
 (use-package flycheck
-  :ensure t)
+  :ensure t
+  :bind
+  ("s-[" . 'flycheck-previous-error)
+  ("s-]" . 'flycheck-next-error)
+  )
 
 (use-package flycheck-pycheckers
   :ensure t
-  :after (python flycheck
+  :after (python flycheck)
   :init
   (add-hook 'python-mode-hook #'flycheck-pycheckers-setup)
-  ))
+  :config
+  (setq flycheck-pycheckers-checkers '(flake8))
+  )
 
 (use-package yaml-mode
   :ensure t
@@ -281,18 +376,7 @@ at the top level of DIRECTORY."
   :after (counsel projectile)
   :config
   (counsel-projectile-mode)
-  (setq counsel-projectile-org-capture-templates
-	'(("d" "Detail" entry
-	   (file "~/Documents/org/tickets.org")
-	   "*** %?
-   %a
-")
-	  ("t" "Task" entry
-	   (file+headline "~/Documents/org/notes.org" "Tasks")
-	   "* TODO %?
-  %u
-  %a
-"))))
+)
 
 
 ;; (use-package magit
@@ -313,7 +397,7 @@ at the top level of DIRECTORY."
   (setq org-hide-leading-stars t)
   (setq org-log-done 'time)
   (setq org-directory "~/Documents/org")
-  (setq org-default-notes-file (concat org-directory "/notes.org"))
+  (setq org-default-notes-file (concat org-directory "/misc.org"))
   ;; :bind-keymap
   ;; ("C-c c" . 'org-capture)
   :bind
@@ -328,6 +412,7 @@ at the top level of DIRECTORY."
     (not (or (string= lang "python")
 	     (string= lang "sql"))))
   (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+
   ;; (setq org-capture-templates '(
   ;; 				'("i" "Tickets" "entry"
   ;; 				  '("file+headline" "tickets.org" "Unsorted")
@@ -348,14 +433,19 @@ at the top level of DIRECTORY."
 
 ;; (global-whitespace-mode t)
 
+(use-package rg
+  :ensure t
+  :config
+  (rg-enable-default-bindings))
 
-;; (when (fboundp 'winner-mode)
-;;   (winner-mode 1))
+(when (fboundp 'winner-mode)
+  (winner-mode 1))
 
 ;; Linum mode: for line numbers
 ;; (add-hook 'find-file-hook (lambda () (linum-relative-on)))
 (setq linum-format "%d ")
 (use-package linum-relative
+  :delight
   :ensure t
   :config
   (linum-relative-global-mode t)
@@ -387,19 +477,21 @@ END: the last character to copy."
   )
 
 
+
+
 ;; Custom Keybinds
 
-(global-set-key (kbd "<F5>") 'sort-lines)
+(global-set-key (kbd "<f5>") 'sort-lines)
 ;; (global-set-key [mouse-4] 'previous-line)
 ;; (global-set-key [mouse-5] 'next-line)
 ;; (global-set-key (kbd "C-x !") 'maximize-window)
+
 
 (global-set-key (kbd "M-P") 'region-pbcopy)
 ;; ;; Programming
 ;; (global-set-key (kbd "C-x /") 'comment-line)
 
 ;; ;; Disable Commands
-;; (put 'upcase-region 'disabled nil)
 ;; (put 'downcase-region 'disabled nil)
 
 ;; (toggle-frame-maximized)
@@ -445,7 +537,6 @@ END: the last character to copy."
 ;;  '(ido-enable-flex-matching t)
 ;;  '(ido-everywhere t)
 ;;  '(ido-ignore-directories (quote ("\\`CVS/" "\\`\\.\\./" "\\`\\./" ".*\\.egg-info/")))
-;;  '(indent-tabs-mode nil)
 ;;  '(ivy-count-format "(%d/%d) ")
 ;;  '(ivy-fixed-height-minibuffer t)
 ;;  '(ivy-use-virtual-buffers t)
@@ -510,7 +601,11 @@ END: the last character to copy."
       "* %? (%T)"))))
  '(package-selected-packages
    (quote
-    (smooth-scrolling show-paren-mode powerline mmm-mako mmm-jinja2 linum-relative yaml-mode flycheck-pycheckers yasnippet-snippets yasnippet zenburn-theme use-package pyenv-mode-auto lsp-ui lsp-python ibuffer-projectile counsel-projectile company-lsp)))
+    (magit scss-mode vue-mode rjsx-mode js2-mode delight rg ox-trac smooth-scrolling show-paren-mode powerline mmm-mako mmm-jinja2 linum-relative yaml-mode flycheck-pycheckers yasnippet-snippets yasnippet zenburn-theme use-package pyenv-mode-auto lsp-ui lsp-python ibuffer-projectile counsel-projectile company-lsp)))
+ '(projectile-completion-system (quote ivy))
+ '(projectile-globally-ignored-directories
+   (quote
+    (".idea" ".ensime_cache" ".eunit" ".git" ".hg" ".fslckout" "_FOSSIL_" ".bzr" "_darcs" ".tox" ".svn" ".stack-work" "node_modules")))
  '(quote
    (package-selected-packages
     (quote
@@ -521,3 +616,4 @@ END: the last character to copy."
 ;;  ;; Your init file should contain only one such instance.
 ;;  ;; If there is more than one, they won't work right.
 ;;  )
+(put 'upcase-region 'disabled nil)
