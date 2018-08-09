@@ -26,7 +26,8 @@ ignore = ~/.hgignore
 purge =
 strip =
 graphlog =
-
+rebase =
+histedit =
 
 [alias]
 lg = log --graph
