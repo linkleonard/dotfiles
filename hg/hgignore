@@ -9,6 +9,9 @@ syntax: glob
 # Python
 *.pyc
 
+# pytest
+.pytest_cache/
+
 # Coverage
 htmlcov/
 
