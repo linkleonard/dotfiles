@@ -253,7 +253,9 @@
 
 (use-package scss-mode
   :ensure t
-)
+  )
+
+(setq css-indent-offset 2)
 
 (use-package rjsx-mode
   :ensure t
@@ -343,14 +345,26 @@
 ;; (use-package pycoverage
 ;;   :ensure t)
 
+;; TODO: Investigate usage of flx
+;; (use-package flx
+;;   :ensure t)
+
 (use-package projectile
   :ensure t
+  :after ivy
   :bind-keymap
   ("C-c p" . projectile-command-map)
   :init
   (setq projectile-enable-caching t)
   (setq projectile-switch-project-action #'projectile-dired)
+
   :config
+  ;; Might need to be moved somewhere else... ivy is not guaranteed to exist yet?
+  (projectile-mode)
+  (setq projectile-completion-system 'ivy)
+
+  (add-to-list 'projectile-globally-ignored-directories "node_modules")
+
   ;; Fix projectile-discover-projects-in-directory.
   ;; Patched version is in v0.16, which is not released yet. Unclear when this
   ;; will be released. See https://github.com/bbatsov/projectile/issues/1165
@@ -486,8 +500,8 @@ END: the last character to copy."
 ;; (global-set-key [mouse-5] 'next-line)
 ;; (global-set-key (kbd "C-x !") 'maximize-window)
 
-
-(global-set-key (kbd "M-P") 'region-pbcopy)
+;; S-c already has a useful binding
+;; (global-set-key (kbd "M-P") 'region-pbcopy)
 ;; ;; Programming
 ;; (global-set-key (kbd "C-x /") 'comment-line)
 
@@ -537,9 +551,7 @@ END: the last character to copy."
 ;;  '(ido-enable-flex-matching t)
 ;;  '(ido-everywhere t)
 ;;  '(ido-ignore-directories (quote ("\\`CVS/" "\\`\\.\\./" "\\`\\./" ".*\\.egg-info/")))
-;;  '(ivy-count-format "(%d/%d) ")
 ;;  '(ivy-fixed-height-minibuffer t)
-;;  '(ivy-use-virtual-buffers t)
 ;;  '(org-agenda-files
 ;;    (quote
 ;;     ("~/Documents/org/notes.org" "~/Documents/org/tickets.org")))
@@ -590,7 +602,7 @@ END: the last character to copy."
  ;; If there is more than one, they won't work right.
  '(org-agenda-files
    (quote
-    ("~/Documents/org/notes.org" "~/Documents/org/tickets.org")))
+    ("~/Documents/org/arowana.org" "~/Documents/org/notes.org" "~/Documents/org/tickets.org")))
  '(org-capture-templates
    (quote
     (("i" "Tickets" entry
@@ -603,9 +615,6 @@ END: the last character to copy."
    (quote
     (magit scss-mode vue-mode rjsx-mode js2-mode delight rg ox-trac smooth-scrolling show-paren-mode powerline mmm-mako mmm-jinja2 linum-relative yaml-mode flycheck-pycheckers yasnippet-snippets yasnippet zenburn-theme use-package pyenv-mode-auto lsp-ui lsp-python ibuffer-projectile counsel-projectile company-lsp)))
  '(projectile-completion-system (quote ivy))
- '(projectile-globally-ignored-directories
-   (quote
-    (".idea" ".ensime_cache" ".eunit" ".git" ".hg" ".fslckout" "_FOSSIL_" ".bzr" "_darcs" ".tox" ".svn" ".stack-work" "node_modules")))
  '(quote
    (package-selected-packages
     (quote
