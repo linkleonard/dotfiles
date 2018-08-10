@@ -1,6 +1,10 @@
 # -*- mode: shell-script; -*-
 
-# Custom bash aliases
+# Standard tools
 alias ls='ls -G'
-alias hg-pu='hg pull && hg update'
 alias edit='emacsclient'
+alias less="less -S"
+
+# Mercurial stuffs
+alias hg-pu='hg pull && hg update'
+alias hg-close="hg commit -m Closing --close"
