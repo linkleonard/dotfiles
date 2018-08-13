@@ -600,6 +600,7 @@ END: the last character to copy."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(inhibit-startup-screen t)
  '(org-agenda-files
    (quote
     ("~/Documents/org/arowana.org" "~/Documents/org/notes.org" "~/Documents/org/tickets.org")))
@@ -611,10 +612,10 @@ END: the last character to copy."
      ("p" "Personal things to do" entry
       (file+headline "" "Tasks")
       "* %? (%T)"))))
+ '(package-enable-at-startup nil)
  '(package-selected-packages
    (quote
     (magit scss-mode vue-mode rjsx-mode js2-mode delight rg ox-trac smooth-scrolling show-paren-mode powerline mmm-mako mmm-jinja2 linum-relative yaml-mode flycheck-pycheckers yasnippet-snippets yasnippet zenburn-theme use-package pyenv-mode-auto lsp-ui lsp-python ibuffer-projectile counsel-projectile company-lsp)))
- '(projectile-completion-system (quote ivy))
  '(quote
    (package-selected-packages
     (quote
