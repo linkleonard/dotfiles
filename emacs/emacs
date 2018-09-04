@@ -108,6 +108,12 @@
 (use-package zenburn-theme
   :ensure t)
 
+(use-package color-theme-sanityinc-tomorrow
+  :ensure t
+  :config
+  (load-theme 'sanityinc-tomorrow-night t)
+  )
+
 ;; (use-package emmet-mode
 ;;   :ensure t
 ;;   :config
