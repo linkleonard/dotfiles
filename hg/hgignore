@@ -25,3 +25,6 @@ htmlcov/
 
 # lock files
 .\#*
+
+# Custom set variables
+.dir-locals.el
