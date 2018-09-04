@@ -7,6 +7,8 @@
   (message ".emacs loaded in %fms" (/ (- (anarcat/time-to-ms (current-time)) (anarcat/time-to-ms *emacs-load-start*)) 1000000.0)))
 (add-hook 'after-init-hook 'anarcat/display-timing t)
 
+(add-to-list 'load-path (concat user-emacs-directory "unmanaged-packages"))
+
 (require 'package)
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
@@ -260,9 +262,11 @@
 
 (use-package rjsx-mode
   :ensure t
+  :after js2-mode
   :mode "\\.js\\'"
   :config
   (initialize-js)
+  (add-hook 'rjsx-mode-hook #'flycheck-mode)
   )
 
 
@@ -491,6 +495,11 @@ END: the last character to copy."
     )
   )
 
+
+(use-package js2-mode
+  :ensure
+  :config
+  (require 'rjsx-mode (concat user-emacs-directory "unmanaged-packages/rjsx-mode/rjsx-mode.el")))
 
 
 
