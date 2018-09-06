@@ -374,7 +374,11 @@
   (projectile-mode)
   (setq projectile-completion-system 'ivy)
 
+  ;; NodeJS
   (add-to-list 'projectile-globally-ignored-directories "node_modules")
+  ;; Python
+  (add-to-list 'projectile-globally-ignored-directories "build")
+  (add-to-list 'projectile-globally-ignored-directories "*.egg-info")
 
   ;; Fix projectile-discover-projects-in-directory.
   ;; Patched version is in v0.16, which is not released yet. Unclear when this
