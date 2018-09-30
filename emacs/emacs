@@ -7,8 +7,6 @@
   (message ".emacs loaded in %fms" (/ (- (anarcat/time-to-ms (current-time)) (anarcat/time-to-ms *emacs-load-start*)) 1000000.0)))
 (add-hook 'after-init-hook 'anarcat/display-timing t)
 
-(add-to-list 'load-path (concat user-emacs-directory "unmanaged-packages"))
-
 (require 'package)
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
@@ -36,8 +34,6 @@
 ;; Always use spaces when indenting!
 (setq-default indent-tabs-mode nil)
 
-
-(setq use-dialog-box nil)
 (setq show-paren-mode t)
 (setq show-paren-delay 0)
 (setq show-paren-highlight-openparen t)
@@ -95,8 +91,16 @@
         (ibuffer-do-sort-by-alphabetic))))
   )
 
+(use-package markdown-mode
+  :ensure t)
+
 (use-package mmm-jinja2
   :ensure t)
+
+;; Configure auto-loading somehow?
+(use-package salt-mode
+  :ensure t)
+
 (use-package mmm-mode
   :ensure t)
 (use-package mmm-mako
@@ -227,13 +231,13 @@
                                      (funcall separator-right face2 face1)
   				     (unless window-system
   				       (powerline-raw (char-to-string #xe0a1) face1 'l))
-  				     (powerline-raw "%5l" face1 'l)
+  				     (powerline-raw "%5l " face1 'l)
                                      ;; Showing columns will make editing slow... so let's not.
   				     ;; (powerline-raw ":" face1 'l)
   				     ;; (powerline-raw "%3c" face1 'r)
   				     (funcall separator-right face1 face0)
   				     (powerline-raw " " face0)
-  				     (powerline-raw "%6p" face0 'r)
+  				     (powerline-raw "%6p " face0 'r)
                                      (when powerline-display-hud
                                        (powerline-hud face0 face2))
   				     (powerline-fill face0 0)
@@ -269,10 +273,18 @@
 (use-package rjsx-mode
   :ensure t
   :after js2-mode
+  :load-path "unmanaged-packages/rjsx-mode/"
   :mode "\\.js\\'"
   :config
   (initialize-js)
   (add-hook 'rjsx-mode-hook #'flycheck-mode)
+  )
+
+
+(use-package highlight-indentation
+  :load-path "unmanaged-packages/highlight-indentation-mode/"
+  :config
+  (add-hook 'python-mode-hook 'highlight-indentation-mode)
   )
 
 
@@ -283,6 +295,17 @@
 ;;   (progn
 ;;     (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c" "M-g" "C-c p"))
 ;;     (guide-key-mode 1)))
+(use-package yaml-mode
+  :ensure t
+  :mode "\\.yml\\'"
+  )
+
+(use-package flycheck-yamllint
+  :ensure t
+  :after yaml-mode
+  :config
+  (add-hook 'yaml-mode-hook #'flycheck-mode)
+  )
 
 (use-package ivy
   :ensure t
@@ -420,6 +443,10 @@ at the top level of DIRECTORY."
 ;; Post-save Hooks
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
+(use-package ox-md)
+(use-package ox-jira
+  :ensure t)
+
 (use-package org
   :ensure t
   :init
@@ -461,6 +488,13 @@ at the top level of DIRECTORY."
 ;; (mouse-wheel-mode t)
 
 ;; (global-whitespace-mode t)
+
+(use-package org-jira
+  :ensure t
+  :init
+  (setq jiralib-url "https://jira.truveris.com/")
+  :after org
+  )
 
 (use-package rg
   :ensure t
@@ -507,10 +541,25 @@ END: the last character to copy."
 
 
 (use-package js2-mode
-  :ensure
-  :config
-  (require 'rjsx-mode (concat user-emacs-directory "unmanaged-packages/rjsx-mode/rjsx-mode.el")))
+  :ensure)
 
+;; Stolen from https://emacs.stackexchange.com/a/18884
+(defvar my-ansi-escape-re
+  (rx (or ?\233 (and ?\e ?\[))
+      (zero-or-more (char (?0 . ?\?)))
+      (zero-or-more (char ?\s ?- ?\/))
+      (char (?@ . ?~))))
+
+(defun my-nuke-ansi-escapes (beg end)
+  (save-excursion
+    (goto-char beg)
+    (while (re-search-forward my-ansi-escape-re end t)
+      (replace-match ""))))
+
+(defun my-eshell-nuke-ansi-escapes ()
+  (my-nuke-ansi-escapes eshell-last-output-start eshell-last-output-end))
+
+(add-hook 'eshell-output-filter-functions 'my-eshell-nuke-ansi-escapes t)
 
 
 ;; Custom Keybinds
@@ -622,7 +671,26 @@ END: the last character to copy."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default bold shadow italic underline bold bold-italic bold])
+ '(ansi-color-names-vector
+   (vector "#515151" "#f2777a" "#99cc99" "#ffcc66" "#6699cc" "#cc99cc" "#66cccc" "#cccccc"))
+ '(beacon-color "#f2777a")
+ '(company-quickhelp-color-background "#4F4F4F")
+ '(company-quickhelp-color-foreground "#DCDCCC")
+ '(custom-enabled-themes (quote (sanityinc-tomorrow-night)))
+ '(custom-safe-themes
+   (quote
+    ("06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" default)))
+ '(fci-rule-color "#515151")
+ '(flycheck-color-mode-line-face-to-color (quote mode-line-buffer-id))
+ '(flycheck-eslint-args nil)
+ '(flycheck-javascript-eslint-executable nil)
+ '(frame-background-mode (quote dark))
  '(inhibit-startup-screen t)
+ '(nrepl-message-colors
+   (quote
+    ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(org-agenda-files
    (quote
     ("~/Documents/org/arowana.org" "~/Documents/org/notes.org" "~/Documents/org/tickets.org")))
@@ -637,11 +705,35 @@ END: the last character to copy."
  '(package-enable-at-startup nil)
  '(package-selected-packages
    (quote
-    (magit scss-mode vue-mode rjsx-mode js2-mode delight rg ox-trac smooth-scrolling show-paren-mode powerline mmm-mako mmm-jinja2 linum-relative yaml-mode flycheck-pycheckers yasnippet-snippets yasnippet zenburn-theme use-package pyenv-mode-auto lsp-ui lsp-python ibuffer-projectile counsel-projectile company-lsp)))
+    (ox-jira org-jira color-theme-sanityinc-tomorrow salt-mode flycheck-yamllint markdown-mode magit scss-mode vue-mode rjsx-mode js2-mode delight rg ox-trac smooth-scrolling show-paren-mode powerline mmm-mako mmm-jinja2 linum-relative yaml-mode flycheck-pycheckers yasnippet-snippets yasnippet zenburn-theme use-package pyenv-mode-auto lsp-ui lsp-python ibuffer-projectile counsel-projectile company-lsp)))
+ '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
  '(quote
    (package-selected-packages
     (quote
-     (projectile use-package)))))
+     (projectile use-package))))
+ '(show-paren-mode t)
+ '(vc-annotate-background nil)
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#f2777a")
+     (40 . "#f99157")
+     (60 . "#ffcc66")
+     (80 . "#99cc99")
+     (100 . "#66cccc")
+     (120 . "#6699cc")
+     (140 . "#cc99cc")
+     (160 . "#f2777a")
+     (180 . "#f99157")
+     (200 . "#ffcc66")
+     (220 . "#99cc99")
+     (240 . "#66cccc")
+     (260 . "#6699cc")
+     (280 . "#cc99cc")
+     (300 . "#f2777a")
+     (320 . "#f99157")
+     (340 . "#ffcc66")
+     (360 . "#99cc99"))))
+ '(vc-annotate-very-old-color nil))
 ;; (custom-set-faces
 ;;  ;; custom-set-faces was added by Custom.
 ;;  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -649,3 +741,6 @@ END: the last character to copy."
 ;;  ;; If there is more than one, they won't work right.
 ;;  )
 (put 'upcase-region 'disabled nil)
+
+;; Extract string delimited by quotes
+;; ^.*\("[^"]+"\),.*$ \1

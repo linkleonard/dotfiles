@@ -6,6 +6,8 @@ Z_SYMLINK=$HOME/bin/z
 BASH_PREEXEC_SCRIPT=$HOME/.bash-preexec.sh
 EMACS_UNMANAGED_PACKAGES_DIR=$HOME/.emacs.d/unmanaged-packages
 RJSX_PACKAGE_DIR=$EMACS_UNMANAGED_PACKAGES_DIR/rjsx-mode
+ORG_MODE_PACKAGE_DIR=$EMACS_UNMANAGED_PACKAGES_DIR/org-mode
+HIGHLIGHT_INDENTATION_PACKAGE_DIR=$EMACS_UNMANAGED_PACKAGES_DIR/highlight-indentation-mode
 
 CLONE_DESTINATIONS=(
     $HOME/bin
@@ -22,15 +24,23 @@ things_to_clone=(
     # https://github.com/felipeochoa/rjsx-mode/issues/67 as it has not
     # been released yet.
     "git@github.com:felipeochoa/rjsx-mode.git $RJSX_PACKAGE_DIR"
+
+    # Allows org-babel-tangle to be run even on a fresh setup
+    "https://code.orgmode.org/bzg/org-mode.git $ORG_MODE_PACKAGE_DIR"
+
+    "git@github.com:antonj/Highlight-Indentation-for-Emacs.git $HIGHLIGHT_INDENTATION_PACKAGE_DIR"
 )
 
 for thing in "${things_to_clone[@]}"; do
     read repository destination <<< "$thing";
     if [[ ! -a $destination ]]; then
-        echo git clone $repository $destination
         git clone $repository $destination
     fi;
 done;
+
+cd $ORG_MODE_PACKAGE_DIR;
+make autoloads;
+cd -;
 
 if [[ ! -a $Z_SYMLINK ]]; then
     ln -s $Z_DIR/z.sh $Z_SYMLINK;
