@@ -1,4 +1,4 @@
--*- mode: lisp -*-
+;; -*- mode: lisp -*-
 
 ;; time the loading of the .emacs
 ;; keep this on top of your .emacs
