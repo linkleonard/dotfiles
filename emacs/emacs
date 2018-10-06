@@ -384,6 +384,10 @@
 ;; (use-package flx
 ;;   :ensure t)
 
+(use-package ivy-hydra
+  :ensure t
+  )
+
 (use-package projectile
   :ensure t
   :after ivy
@@ -540,6 +544,9 @@ END: the last character to copy."
     )
   )
 
+
+(use-package go-mode
+  :ensure)
 
 (use-package js2-mode
   :ensure)
