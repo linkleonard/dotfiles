@@ -190,6 +190,7 @@
   (defun powerline-default-theme ()
   "Setup the default mode-line."
   (interactive)
+  (setq powerline-image-apple-rgb t)
   (setq powerline-gui-use-vcs-glyph t)
   (setq-default mode-line-format
                 '("%e"
