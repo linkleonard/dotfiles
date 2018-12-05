@@ -1,3 +1,5 @@
+;; -*- mode: lisp -*-
+
 ;; time the loading of the .emacs
 ;; keep this on top of your .emacs
 (defvar *emacs-load-start* (current-time))
@@ -8,13 +10,18 @@
 (add-hook 'after-init-hook 'anarcat/display-timing t)
 
 (require 'package)
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
+;; The windows build of emacs doesn't play nice with https unfortunately
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                    (not (gnutls-available-p))))
+       (proto (if no-ssl "http" "https")))
+  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
+  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+  (when (< emacs-major-version 24)
+    ;; For important compatibility libraries like cl-lib
+    (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
 (package-initialize)
-
 (eval-when-compile
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
@@ -475,11 +482,15 @@ at the top level of DIRECTORY."
   :bind
   ("C-c a" . 'org-agenda)
   :config
+  (setq babel-languages '((python . t) (sql . t)))
+
+  ;; Doesn't make sense to load shell support on windows, since we
+  ;; can't ever run them anyway.
+  (when (not (memq system-type '(windows-nt ms-dos)))
+    (add-to-list babel-languages '(sh . t)))
+
   (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((python . t)
-     (sh . t)
-     (sql . t)))
+   'org-babel-load-languages babel-languages)
   (defun my-org-confirm-babel-evaluate (lang body)
     (not (or (string= lang "python")
 	     (string= lang "sql"))))
@@ -584,6 +595,9 @@ END: the last character to copy."
 
 (add-hook 'eshell-output-filter-functions 'my-eshell-nuke-ansi-escapes t)
 
+(use-package go-mode
+  :ensure)
+
 
 ;; Custom Keybinds
 
@@ -680,9 +694,7 @@ END: the last character to copy."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(powerline-active2 ((t (:inherit mode-line :background "#404040"))))
- '(powerline-inactive2 ((t (:inherit mode-line-inactive :background "#5a5a5a"))))
- '(whitespace-line ((t (:background "#3F3F3F" :foreground "#DC8CC3")))))
+ )
 
 ;; (setq tab-width 4) ; or any other preferred value
 ;; (defvaralias 'c-basic-offset 'tab-width)
@@ -766,7 +778,9 @@ END: the last character to copy."
      (320 . "#f99157")
      (340 . "#ffcc66")
      (360 . "#99cc99"))))
- '(vc-annotate-very-old-color nil))
+ '(vc-annotate-very-old-color nil)
+ '(flycheck-pycheckers-checkers (quote (flake8))))
+
 ;; (custom-set-faces
 ;;  ;; custom-set-faces was added by Custom.
 ;;  ;; If you edit it by hand, you could mess it up, so be careful.
