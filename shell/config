@@ -19,7 +19,13 @@ precmd_functions+=(update_z)
 # Editors
 # ================================================================
 
-export EDITOR=emacsclient
+export EDITOR="code --wait --reuse-window"
+
+# Tagging
+# ================================================================
+
+# Use global when looking up tags in `less`
+export LESSGLOBALTAGS=global
 
 # Pager
 # ================================================================

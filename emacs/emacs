@@ -41,7 +41,19 @@
 (setq show-paren-when-point-inside-paren t)
 (setq truncate-lines t)
 
+;; Why doesn't this fire when we run dired?
+(add-hook 'dired-load-hook
+          (lambda ()
+            (load "dired-x")
+            (dired-omit-mode 1)
+            ))
+
+
 (server-start)
+
+
+(use-package counsel-gtags
+  :ensure t)
 
 (add-to-list 'display-buffer-alist
              `(,
@@ -52,15 +64,9 @@
 	       (window-height   . 0.20)
 	       ))
 
-(add-hook 'dired-load-hook
-          (lambda ()
-            (load "dired-x")
-            ))
-(add-hook 'dired-mode-hook
-          (lambda()
-            (dired-omit-mode 1)
-            ))
 
+(use-package ggtags
+  :ensure t)
 
 (use-package yasnippet
   :ensure t
@@ -125,6 +131,11 @@
 ;;   (add-hook 'css-mode-hook  'emmet-mode)
 ;;   (setq emmet-self-closing-tag-style " /"))
 
+
+;; (use-package company-ctags
+;;   :after company
+;;   :ensure t
+;;   )
 
 (use-package company
   :ensure t
@@ -501,6 +512,9 @@ at the top level of DIRECTORY."
   :after org
   )
 
+(use-package toml-mode
+  :ensure t)
+
 (use-package rg
   :ensure t
   :config
@@ -512,12 +526,13 @@ at the top level of DIRECTORY."
 ;; Linum mode: for line numbers
 ;; (add-hook 'find-file-hook (lambda () (linum-relative-on)))
 (setq linum-format "%d ")
-(use-package linum-relative
-  :delight
-  :ensure t
-  :config
-  (linum-relative-global-mode t)
-  )
+
+;; (use-package linum-relative
+;;   :delight
+;;   :ensure t
+;;   :config
+;;   (linum-relative-global-mode t)
+;;   )
 
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings))
@@ -695,7 +710,17 @@ END: the last character to copy."
  '(flycheck-eslint-args nil)
  '(flycheck-javascript-eslint-executable nil)
  '(frame-background-mode (quote dark))
+ '(grep-find-ignored-files
+   (quote
+    (".#*" "*.o" "*~" "*.bin" "*.lbin" "*.so" "*.a" "*.ln" "*.blg" "*.bbl" "*.elc" "*.lof" "*.glo" "*.idx" "*.lot" "*.fmt" "*.tfm" "*.class" "*.fas" "*.lib" "*.mem" "*.x86f" "*.sparcf" "*.dfsl" "*.pfsl" "*.d64fsl" "*.p64fsl" "*.lx64fsl" "*.lx32fsl" "*.dx64fsl" "*.dx32fsl" "*.fx64fsl" "*.fx32fsl" "*.sx64fsl" "*.sx32fsl" "*.wx64fsl" "*.wx32fsl" "*.fasl" "*.ufsl" "*.fsl" "*.dxl" "*.lo" "*.la" "*.gmo" "*.mo" "*.toc" "*.aux" "*.cp" "*.fn" "*.ky" "*.pg" "*.tp" "*.vr" "*.cps" "*.fns" "*.kys" "*.pgs" "*.tps" "*.vrs" "*.pyc" "*.pyo" "*.orig" "#*#")))
  '(inhibit-startup-screen t)
+ '(ivy-count-format "(%d/%d) ")
+ '(ivy-preferred-re-builders
+   (quote
+    ((ivy--regex-plus . "ivy")
+     (ivy--regex-ignore-order . "order")
+     (ivy--regex-fuzzy . "fuzzy"))))
+ '(ivy-use-virtual-buffers t)
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
@@ -713,7 +738,7 @@ END: the last character to copy."
  '(package-enable-at-startup nil)
  '(package-selected-packages
    (quote
-    (ox-jira org-jira color-theme-sanityinc-tomorrow salt-mode flycheck-yamllint markdown-mode magit scss-mode vue-mode rjsx-mode js2-mode delight rg ox-trac smooth-scrolling show-paren-mode powerline mmm-mako mmm-jinja2 linum-relative yaml-mode flycheck-pycheckers yasnippet-snippets yasnippet zenburn-theme use-package pyenv-mode-auto lsp-ui lsp-python ibuffer-projectile counsel-projectile company-lsp)))
+    (toml-mode dired-x company-ctags ggtags gtags gtags-mode counsel-gtags ivy-hydra go-mode ox-jira org-jira color-theme-sanityinc-tomorrow salt-mode flycheck-yamllint markdown-mode magit scss-mode vue-mode rjsx-mode js2-mode delight rg ox-trac smooth-scrolling show-paren-mode powerline mmm-mako mmm-jinja2 linum-relative yaml-mode flycheck-pycheckers yasnippet-snippets yasnippet zenburn-theme use-package pyenv-mode-auto lsp-ui lsp-python ibuffer-projectile counsel-projectile company-lsp)))
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
  '(quote
    (package-selected-packages

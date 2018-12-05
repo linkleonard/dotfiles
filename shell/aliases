@@ -8,3 +8,7 @@ alias less="less -S"
 # Mercurial stuffs
 alias hg-pu='hg pull && hg update'
 alias hg-close="hg commit -m Closing --close"
+
+function hg-commit-amend () {
+    hg commit --amend -m "$(hg log -r . --template "{desc}")"
+}

@@ -31,6 +31,7 @@ histedit =
 
 [alias]
 lg = log --graph
+cia = ci --amend
 
 
 [hooks]

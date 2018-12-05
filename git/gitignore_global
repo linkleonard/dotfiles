@@ -3,6 +3,10 @@
 
 # python files
 htmlcov
+.python-version
+
+# jupyter notebook temp files
+.ipynb_checkpoints
 
 # Emacs files
 \#*\#

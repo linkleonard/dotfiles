@@ -1,0 +1,27 @@
+{
+    "hg.autoRefresh": false,
+    "hg.autoUpdate": false,
+    "terminal.external.osxExec": "iTerm.app",
+    "hg.autoInOut": false,
+    "editor.renderWhitespace": "boundary",
+    "files.exclude": {
+        "**/.coverage": true,
+        "**/.dir-locals.el": true,
+        "**/*~": true
+    },
+    "terminal.integrated.macOptionIsMeta": true,
+    "workbench.colorTheme": "Monokai",
+    "python.jediEnabled": false,
+    "files.autoSave": "afterDelay",
+    "explorer.confirmDragAndDrop": false,
+    "python.autoComplete.addBrackets": true,
+    "[python]": {
+
+    },
+    "python.unitTest.autoTestDiscoverOnSaveEnabled": false,
+    "python.unitTest.promptToConfigure": false,
+    "files.trimTrailingWhitespace": true,
+    "window.zoomLevel": 0,
+    "breadcrumbs.enabled": true,
+    "git.ignoreMissingGitWarning": true
+}
